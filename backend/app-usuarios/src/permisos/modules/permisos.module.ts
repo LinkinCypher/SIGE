@@ -3,6 +3,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { PermisosController } from '../controllers/permisos.controller';
 import { PermisosService } from '../services/permisos.service';
 import { Permiso, PermisoSchema } from '../entities/permiso.entity';
+import { InicializadorPermisosService } from '../services/inicializador-permisos.service';
 
 @Module({
   imports: [
@@ -11,7 +12,7 @@ import { Permiso, PermisoSchema } from '../entities/permiso.entity';
     ]),
   ],
   controllers: [PermisosController],
-  providers: [PermisosService],
+  providers: [PermisosService, InicializadorPermisosService],
   exports: [PermisosService],
 })
 export class PermisosModule {}

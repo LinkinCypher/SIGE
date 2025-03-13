@@ -1,0 +1,42 @@
+export const PaginasSistema = {
+    codigo: 'sistema',
+    nombre: 'Administración del Sistema',
+    descripcion: 'Configuración y administración general del sistema',
+    ruta: '/admin/sistema',
+    icono: 'settings',
+    esModulo: true,
+    permisoCodigo: 'usuarios.admin',
+    orden: 1,
+    subpaginas: [
+      {
+        codigo: 'sistema.usuarios',
+        nombre: 'Gestión de Usuarios',
+        descripcion: 'Administración de usuarios del sistema',
+        ruta: '/admin/sistema/usuarios',
+        icono: 'users',
+        esModulo: false,
+        permisoCodigo: 'usuarios.ver',
+        orden: 1,
+      },
+      {
+        codigo: 'sistema.permisos',
+        nombre: 'Gestión de Permisos',
+        descripcion: 'Administración de permisos y accesos',
+        ruta: '/admin/sistema/permisos',
+        icono: 'shield',
+        esModulo: false,
+        permisoCodigo: 'permisos.asignar',
+        orden: 2,
+      },
+      {
+        codigo: 'sistema.paginas',
+        nombre: 'Gestión de Páginas',
+        descripcion: 'Administración de páginas del sistema',
+        ruta: '/admin/sistema/paginas',
+        icono: 'layout',
+        esModulo: false,
+        permisoCodigo: 'paginas.admin',
+        orden: 3,
+      },
+    ]
+  };

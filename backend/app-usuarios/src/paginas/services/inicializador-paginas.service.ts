@@ -1,8 +1,6 @@
 import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { PaginasService } from './paginas.service';
 import { PermisosService } from '../../permisos/services/permisos.service';
-import { Permiso } from '../../permisos/entities/permiso.entity';
-import { Pagina } from '../entities/pagina.entity';
 
 @Injectable()
 export class InicializadorPaginasService implements OnModuleInit {
@@ -110,36 +108,44 @@ export class InicializadorPaginasService implements OnModuleInit {
 
       // Crear módulos y páginas
       for (const modulo of estructuraBase) {
-        // Obtener el permiso correspondiente
-        const permisoModulo = await this.permisosService.findByCode(modulo.permisoCodigo);
-        
-        // Crear el módulo
-        const moduloCreado = await this.paginasService.create({
-          codigo: modulo.codigo,
-          nombre: modulo.nombre,
-          descripcion: modulo.descripcion,
-          ruta: modulo.ruta,
-          icono: modulo.icono,
-          esModulo: modulo.esModulo,
-          permisoId: permisoModulo['_id'], // Usar notación de corchetes para acceder a _id
-          orden: modulo.orden,
-        });
-        
-        // Crear subpáginas
-        for (const subpagina of modulo.subpaginas) {
-          const permisoSubpagina = await this.permisosService.findByCode(subpagina.permisoCodigo);
+        try {
+          // Obtener el permiso correspondiente
+          const permisoModulo = await this.permisosService.findByCode(modulo.permisoCodigo);
           
-          await this.paginasService.create({
-            codigo: subpagina.codigo,
-            nombre: subpagina.nombre,
-            descripcion: subpagina.descripcion,
-            ruta: subpagina.ruta,
-            icono: subpagina.icono,
-            esModulo: subpagina.esModulo,
-            moduloPadreId: moduloCreado['_id'], // Usar notación de corchetes para acceder a _id
-            permisoId: permisoSubpagina['_id'], // Usar notación de corchetes para acceder a _id
-            orden: subpagina.orden,
+          // Crear el módulo
+          const moduloCreado = await this.paginasService.create({
+            codigo: modulo.codigo,
+            nombre: modulo.nombre,
+            descripcion: modulo.descripcion,
+            ruta: modulo.ruta,
+            icono: modulo.icono,
+            esModulo: modulo.esModulo,
+            permisoId: permisoModulo['_id'],
+            orden: modulo.orden,
           });
+          
+          // Crear subpáginas
+          for (const subpagina of modulo.subpaginas) {
+            try {
+              const permisoSubpagina = await this.permisosService.findByCode(subpagina.permisoCodigo);
+              
+              await this.paginasService.create({
+                codigo: subpagina.codigo,
+                nombre: subpagina.nombre,
+                descripcion: subpagina.descripcion,
+                ruta: subpagina.ruta,
+                icono: subpagina.icono,
+                esModulo: subpagina.esModulo,
+                moduloPadreId: moduloCreado['_id'],
+                permisoId: permisoSubpagina['_id'],
+                orden: subpagina.orden,
+              });
+            } catch (error) {
+              this.logger.warn(`No se pudo crear la subpágina ${subpagina.codigo}: ${error.message}`);
+            }
+          }
+        } catch (error) {
+          this.logger.warn(`No se pudo crear el módulo ${modulo.codigo}: ${error.message}`);
         }
       }
       

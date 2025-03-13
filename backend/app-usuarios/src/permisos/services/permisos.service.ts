@@ -46,6 +46,13 @@ export class PermisosService {
     return permiso;
   }
 
+  async findByIds(ids: any[]): Promise<Permiso[]> {
+    return this.permisoModel.find({
+      _id: { $in: ids },
+      activo: true
+    }).sort({ codigo: 1 }).exec();
+  }
+
   async update(id: string, updatePermisoDto: UpdatePermisoDto): Promise<Permiso> {
     // Si se está actualizando el código, verificar que no exista otro permiso con ese código
     if (updatePermisoDto.codigo) {

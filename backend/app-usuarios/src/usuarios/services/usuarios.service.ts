@@ -201,4 +201,14 @@ export class UsuariosService {
       throw error;
     }
   }
+
+  async updateLastAccess(id: string): Promise<void> {
+    await this.usuarioModel.findByIdAndUpdate(
+      id,
+      { 
+        ultimoAcceso: new Date(),
+        fechaActualizacion: new Date()
+      }
+    ).exec();
+  }
 }

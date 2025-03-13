@@ -9,6 +9,7 @@ import { CargosModule } from './cargos/modules/cargos.module';
 import { PermisosModule } from './permisos/modules/permisos.module';
 import { UsuarioPermisosModule } from './usuario-permisos/modules/usuario-permisos.module';
 import { AuthModule } from './auth/modules/auth.module';
+import { PaginasModule } from './paginas/modules/paginas.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { AuthModule } from './auth/modules/auth.module';
     PermisosModule,
     UsuarioPermisosModule,
     AuthModule,
+    PaginasModule, 
   ],
   controllers: [AppController],
   providers: [AppService],

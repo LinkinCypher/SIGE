@@ -11,7 +11,7 @@ import { RouterModule } from '@angular/router';
   templateUrl: 'app.component.html',
   styleUrls: ['app.component.scss'],
   standalone: true,
-  imports: [CommonModule, IonicModule, RouterModule] // Asegúrate de incluir estos imports
+  imports: [IonicModule, CommonModule, RouterModule] // Importar los módulos necesarios
 })
 export class AppComponent {
   public appPages = [

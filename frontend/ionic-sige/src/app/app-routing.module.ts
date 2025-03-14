@@ -28,12 +28,24 @@ const routes: Routes = [
     loadChildren: () => import('./pages/admin/usuarios/detalle/detalle.page').then( m => m.DetallePage)
   },
   {
+    path: 'admin/usuarios/crear',
+    loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule)
+  },
+  {
+    path: 'admin/usuarios/editar/:id',
+    loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'home'
   },
   {
     path: 'detalle',
     loadChildren: () => import('./pages/admin/usuarios/detalle/detalle.module').then( m => m.DetallePageModule)
+  },
+  {
+    path: 'formulario',
+    loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule)
   }
 ];
 

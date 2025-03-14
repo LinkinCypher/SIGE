@@ -10,13 +10,12 @@ import { AppRoutingModule } from './app-routing.module';
 import { TokenInterceptor } from './services/token.interceptor';
 
 @NgModule({
-  // Eliminar declarations si AppComponent es standalone
   imports: [
     BrowserModule, 
     IonicModule.forRoot(), 
     AppRoutingModule,
     HttpClientModule,
-    AppComponent
+    AppComponent // Importar en lugar de declarar
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

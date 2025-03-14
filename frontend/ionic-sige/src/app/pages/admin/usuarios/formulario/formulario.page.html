@@ -1,0 +1,177 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/usuarios/lista"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ esNuevoUsuario ? 'Crear' : 'Editar' }} Usuario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="usuarioForm" (ngSubmit)="guardarUsuario()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Información Personal</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Nombre <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="nombre" type="text"></ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="usuarioForm.get('nombre')?.touched && usuarioForm.get('nombre')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('nombre')?.errors?.['required']">
+            El nombre es requerido
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Apellido <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="apellido" type="text"></ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="usuarioForm.get('apellido')?.touched && usuarioForm.get('apellido')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('apellido')?.errors?.['required']">
+            El apellido es requerido
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Fecha de Nacimiento <ion-text color="danger">*</ion-text></ion-label>
+          <ion-datetime-button datetime="fechaNacimiento"></ion-datetime-button>
+          
+          <ion-modal [keepContentsMounted]="true">
+            <ng-template>
+              <ion-datetime 
+                id="fechaNacimiento" 
+                [value]="usuarioForm.get('fechaNacimiento')?.value"
+                (ionChange)="onFechaNacimientoChange($event)"
+                presentation="date"
+                [max]="fechaActual">
+              </ion-datetime>
+            </ng-template>
+          </ion-modal>
+        </ion-item>
+        <div class="error-message" *ngIf="usuarioForm.get('fechaNacimiento')?.touched && usuarioForm.get('fechaNacimiento')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('fechaNacimiento')?.errors?.['required']">
+            La fecha de nacimiento es requerida
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Email</ion-label>
+          <ion-input formControlName="email" type="email"></ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="usuarioForm.get('email')?.touched && usuarioForm.get('email')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('email')?.errors?.['email']">
+            Formato de email inválido
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Teléfono</ion-label>
+          <ion-input formControlName="telefono" type="tel"></ion-input>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Información Organizacional</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Dirección <ion-text color="danger">*</ion-text></ion-label>
+          <ion-select formControlName="direccionId" interface="action-sheet" (ionChange)="onDireccionChange()">
+            <ion-select-option [value]="direccion._id" *ngFor="let direccion of direcciones">
+              {{ direccion.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div class="error-message" *ngIf="usuarioForm.get('direccionId')?.touched && usuarioForm.get('direccionId')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('direccionId')?.errors?.['required']">
+            La dirección es requerida
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Cargo <ion-text color="danger">*</ion-text></ion-label>
+          <ion-select formControlName="cargoId" interface="action-sheet" [disabled]="!usuarioForm.get('direccionId')?.value">
+            <ion-select-option [value]="cargo._id" *ngFor="let cargo of cargosFiltrados">
+              {{ cargo.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div class="error-message" *ngIf="usuarioForm.get('cargoId')?.touched && usuarioForm.get('cargoId')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('cargoId')?.errors?.['required']">
+            El cargo es requerido
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Rol <ion-text color="danger">*</ion-text></ion-label>
+          <ion-select formControlName="role" interface="action-sheet">
+            <ion-select-option value="admin">Administrador</ion-select-option>
+            <ion-select-option value="user">Usuario</ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div class="error-message" *ngIf="usuarioForm.get('role')?.touched && usuarioForm.get('role')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('role')?.errors?.['required']">
+            El rol es requerido
+          </ion-text>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Credenciales</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Nombre de Usuario <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="username" type="text"></ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="usuarioForm.get('username')?.touched && usuarioForm.get('username')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('username')?.errors?.['required']">
+            El nombre de usuario es requerido
+          </ion-text>
+        </div>
+
+        <ion-item *ngIf="esNuevoUsuario || cambiarPassword">
+          <ion-label position="floating">Contraseña <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="password" type="password"></ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="(esNuevoUsuario || cambiarPassword) && usuarioForm.get('password')?.touched && usuarioForm.get('password')?.errors">
+          <ion-text color="danger" *ngIf="usuarioForm.get('password')?.errors?.['required']">
+            La contraseña es requerida
+          </ion-text>
+          <ion-text color="danger" *ngIf="usuarioForm.get('password')?.errors?.['minlength']">
+            La contraseña debe tener al menos 6 caracteres
+          </ion-text>
+        </div>
+
+        <div *ngIf="!esNuevoUsuario">
+          <ion-item lines="none">
+            <ion-checkbox formControlName="cambiarPassword" (ionChange)="onCambiarPasswordChange($event)">
+              Cambiar contraseña
+            </ion-checkbox>
+          </ion-item>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit" [disabled]="usuarioForm.invalid || isLoading">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">{{ esNuevoUsuario ? 'Crear' : 'Guardar' }} Usuario</span>
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="cancelar()">
+        Cancelar
+      </ion-button>
+    </div>
+  </form>
+
+  <ion-loading [isOpen]="isLoading" message="Guardando..."></ion-loading>
+</ion-content>

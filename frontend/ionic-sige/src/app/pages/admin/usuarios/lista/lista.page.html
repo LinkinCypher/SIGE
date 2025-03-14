@@ -1,0 +1,68 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Gestión de Usuarios</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="irACrearUsuario()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Nuevo Usuario
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-segment [(ngModel)]="filtroActivo" (ionChange)="cambiarFiltro()">
+          <ion-segment-button value="true">
+            <ion-label>Activos</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="false">
+            <ion-label>Inactivos</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Listado de Usuarios</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-searchbar [(ngModel)]="terminoBusqueda" (ionInput)="filtrarUsuarios()" placeholder="Buscar usuario..."></ion-searchbar>
+
+      <ion-list *ngIf="usuariosFiltrados.length > 0; else noUsuarios">
+        <ion-item *ngFor="let usuario of usuariosFiltrados" button detail (click)="verDetalleUsuario(usuario?._id)">
+          <ion-avatar slot="start">
+            <ion-icon name="person" class="avatar-icon"></ion-icon>
+          </ion-avatar>
+          <ion-label>
+            <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+            <p>Usuario: {{ usuario.username }}</p>
+            <p>Cargo: {{ usuario.cargo || 'No asignado' }}</p>
+          </ion-label>
+          <ion-note slot="end" color="medium">{{ usuario.role }}</ion-note>
+        </ion-item>
+      </ion-list>
+
+      <ng-template #noUsuarios>
+        <div class="ion-text-center ion-padding">
+          <ion-text color="medium">
+            <p>No se encontraron usuarios</p>
+          </ion-text>
+        </div>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-loading [isOpen]="isLoading" message="Cargando usuarios..."></ion-loading>
+</ion-content>

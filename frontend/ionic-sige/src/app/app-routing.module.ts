@@ -16,8 +16,8 @@ const routes: Routes = [
     loadChildren: () => import('./pages/home/home.page').then( m => m.HomePage)
   },
   {
-    path: 'folder/:id',
-    loadChildren: () => import('./folder/folder.module').then( m => m.FolderPageModule)
+    path: 'admin/usuarios/lista',
+    loadChildren: () => import('./pages/admin/usuarios/lista/lista.page').then( m => m.ListaPage)
   },
   // Ruta wildcard para páginas no encontradas
   {

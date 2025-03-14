@@ -1,0 +1,96 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="'/admin/usuarios/detalle/' + usuarioId"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Gestión de Permisos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngIf="usuario">
+    <ion-card-header>
+      <ion-card-subtitle>
+        <ion-badge [color]="usuario.activo ? 'success' : 'danger'">
+          {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+        </ion-badge>
+      </ion-card-subtitle>
+      <ion-card-title>{{ usuario.nombre }} {{ usuario.apellido }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <p><strong>Usuario:</strong> {{ usuario.username }}</p>
+      <p><strong>Cargo:</strong> {{ usuario.cargo || 'No asignado' }}</p>
+      <p><strong>Dirección:</strong> {{ usuario.direccion || 'No asignada' }}</p>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Permisos Asignados</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-searchbar [(ngModel)]="filtroPermisosAsignados" (ionInput)="filtrarPermisosAsignados()" placeholder="Buscar permiso..."></ion-searchbar>
+            
+            <ion-list *ngIf="permisosAsignadosFiltrados.length > 0; else noPermisosAsignados">
+              <ion-item *ngFor="let permiso of permisosAsignadosFiltrados">
+                <ion-label>
+                  <h2>{{ permiso.nombre }}</h2>
+                  <p>{{ permiso.descripcion }}</p>
+                  <p><small>{{ permiso.codigo }}</small></p>
+                </ion-label>
+                <ion-button slot="end" fill="clear" color="danger" (click)="revocarPermiso(permiso)">
+                  <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-list>
+            
+            <ng-template #noPermisosAsignados>
+              <div class="ion-text-center ion-padding">
+                <ion-text color="medium">
+                  <p>No tiene permisos asignados</p>
+                </ion-text>
+              </div>
+            </ng-template>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Permisos Disponibles</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-searchbar [(ngModel)]="filtroPermisosDisponibles" (ionInput)="filtrarPermisosDisponibles()" placeholder="Buscar permiso..."></ion-searchbar>
+            
+            <ion-list *ngIf="permisosDisponiblesFiltrados.length > 0; else noPermisosDisponibles">
+              <ion-item *ngFor="let permiso of permisosDisponiblesFiltrados">
+                <ion-label>
+                  <h2>{{ permiso.nombre }}</h2>
+                  <p>{{ permiso.descripcion }}</p>
+                  <p><small>{{ permiso.codigo }}</small></p>
+                </ion-label>
+                <ion-button slot="end" fill="clear" color="success" (click)="asignarPermiso(permiso)">
+                  <ion-icon slot="icon-only" name="add-circle-outline"></ion-icon>
+                </ion-button>
+              </ion-item>
+            </ion-list>
+            
+            <ng-template #noPermisosDisponibles>
+              <div class="ion-text-center ion-padding">
+                <ion-text color="medium">
+                  <p>No hay permisos disponibles</p>
+                </ion-text>
+              </div>
+            </ng-template>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-loading [isOpen]="isLoading" message="Cargando..."></ion-loading>
+</ion-content>

@@ -36,6 +36,10 @@ const routes: Routes = [
     loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule)
   },
   {
+    path: 'admin/permisos/usuario/:id',
+    loadChildren: () => import('./pages/admin/permisos/usuario-permisos/usuario-permisos.module').then( m => m.UsuarioPermisosPageModule)
+  },
+  {
     path: '**',
     redirectTo: 'home'
   },
@@ -46,6 +50,10 @@ const routes: Routes = [
   {
     path: 'formulario',
     loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule)
+  },
+  {
+    path: 'usuario-permisos',
+    loadChildren: () => import('./pages/admin/permisos/usuario-permisos/usuario-permisos.module').then( m => m.UsuarioPermisosPageModule)
   }
 ];
 

@@ -15,7 +15,7 @@ import { TokenInterceptor } from './services/token.interceptor';
     IonicModule.forRoot(), 
     AppRoutingModule,
     HttpClientModule,
-    AppComponent // Importar en lugar de declarar
+    AppComponent  // Importar como componente standalone
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },

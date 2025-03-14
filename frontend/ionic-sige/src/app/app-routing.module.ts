@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
+import { AuthGuard } from './guards/auth.guard';
+import { PermisosGuard } from './guards/permisos.guard';
 
 const routes: Routes = [
   {
@@ -13,47 +15,42 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.page').then( m => m.HomePage)
+    loadChildren: () => import('./pages/home/home.page').then( m => m.HomePage),
+    canActivate: [AuthGuard]
   },
   {
     path: 'admin/usuarios/lista',
-    loadChildren: () => import('./pages/admin/usuarios/lista/lista.page').then( m => m.ListaPage)
-  },
-  {
-    path: 'admin/usuarios/lista',
-    loadChildren: () => import('./pages/admin/usuarios/lista/lista.page').then( m => m.ListaPage)
+    loadChildren: () => import('./pages/admin/usuarios/lista/lista.page').then( m => m.ListaPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'usuarios.ver' }
   },
   {
     path: 'admin/usuarios/detalle/:id',
-    loadChildren: () => import('./pages/admin/usuarios/detalle/detalle.page').then( m => m.DetallePage)
+    loadChildren: () => import('./pages/admin/usuarios/detalle/detalle.page').then( m => m.DetallePage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'usuarios.ver' }
   },
   {
     path: 'admin/usuarios/crear',
-    loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule)
+    loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'usuarios.crear' }
   },
   {
     path: 'admin/usuarios/editar/:id',
-    loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule)
+    loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'usuarios.editar' }
   },
   {
     path: 'admin/permisos/usuario/:id',
-    loadChildren: () => import('./pages/admin/permisos/usuario-permisos/usuario-permisos.module').then( m => m.UsuarioPermisosPageModule)
+    loadChildren: () => import('./pages/admin/permisos/usuario-permisos/usuario-permisos.module').then( m => m.UsuarioPermisosPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'permisos.asignar' }
   },
   {
     path: '**',
     redirectTo: 'home'
-  },
-  {
-    path: 'detalle',
-    loadChildren: () => import('./pages/admin/usuarios/detalle/detalle.module').then( m => m.DetallePageModule)
-  },
-  {
-    path: 'formulario',
-    loadChildren: () => import('./pages/admin/usuarios/formulario/formulario.module').then( m => m.FormularioPageModule)
-  },
-  {
-    path: 'usuario-permisos',
-    loadChildren: () => import('./pages/admin/permisos/usuario-permisos/usuario-permisos.module').then( m => m.UsuarioPermisosPageModule)
   }
 ];
 

@@ -1,0 +1,126 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/usuarios/lista"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle de Usuario</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editarUsuario()" *ngIf="usuario?.activo">
+        <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="toggleEstadoUsuario()" [color]="usuario?.activo ? 'danger' : 'success'">
+        <ion-icon slot="icon-only" [name]="usuario?.activo ? 'close-circle-outline' : 'checkmark-circle-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngIf="usuario">
+    <ion-card-header>
+      <ion-card-subtitle>
+        <ion-badge [color]="usuario.activo ? 'success' : 'danger'">
+          {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+        </ion-badge>
+      </ion-card-subtitle>
+      <ion-card-title>{{ usuario.nombre }} {{ usuario.apellido }}</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item>
+          <ion-label>
+            <h3>Nombre de usuario</h3>
+            <p>{{ usuario.username }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Cargo</h3>
+            <p>{{ usuario.cargo || 'No asignado' }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Dirección</h3>
+            <p>{{ usuario.direccion || 'No asignada' }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Rol</h3>
+            <p>{{ usuario.role }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item *ngIf="usuario.email">
+          <ion-label>
+            <h3>Email</h3>
+            <p>{{ usuario.email }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item *ngIf="usuario.telefono">
+          <ion-label>
+            <h3>Teléfono</h3>
+            <p>{{ usuario.telefono }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Fecha de nacimiento</h3>
+            <p>{{ usuario.fechaNacimiento | date:'dd/MM/yyyy' }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label>
+            <h3>Fecha de creación</h3>
+            <p>{{ usuario.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</p>
+          </ion-label>
+        </ion-item>
+        
+        <ion-item *ngIf="usuario.ultimoAcceso">
+          <ion-label>
+            <h3>Último acceso</h3>
+            <p>{{ usuario.ultimoAcceso | date:'dd/MM/yyyy HH:mm' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="usuario">
+    <ion-card-header>
+      <ion-card-title>Permisos asignados</ion-card-title>
+    </ion-card-header>
+    
+    <ion-card-content>
+      <ion-button expand="block" (click)="gestionarPermisos()">
+        <ion-icon slot="start" name="key-outline"></ion-icon>
+        Gestionar permisos
+      </ion-button>
+      
+      <ion-list *ngIf="usuario.permisos && usuario.permisos.length > 0; else noPermisos">
+        <ion-item *ngFor="let permiso of usuario.permisos">
+          <ion-icon name="checkmark-circle" slot="start" color="success"></ion-icon>
+          <ion-label>{{ permiso }}</ion-label>
+        </ion-item>
+      </ion-list>
+      
+      <ng-template #noPermisos>
+        <div class="ion-text-center ion-padding">
+          <ion-text color="medium">
+            <p>Este usuario no tiene permisos asignados</p>
+          </ion-text>
+        </div>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-loading [isOpen]="isLoading" message="Cargando información..."></ion-loading>
+</ion-content>

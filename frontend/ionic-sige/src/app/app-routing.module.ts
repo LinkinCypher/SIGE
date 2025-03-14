@@ -19,10 +19,21 @@ const routes: Routes = [
     path: 'admin/usuarios/lista',
     loadChildren: () => import('./pages/admin/usuarios/lista/lista.page').then( m => m.ListaPage)
   },
-  // Ruta wildcard para páginas no encontradas
+  {
+    path: 'admin/usuarios/lista',
+    loadChildren: () => import('./pages/admin/usuarios/lista/lista.page').then( m => m.ListaPage)
+  },
+  {
+    path: 'admin/usuarios/detalle/:id',
+    loadChildren: () => import('./pages/admin/usuarios/detalle/detalle.page').then( m => m.DetallePage)
+  },
   {
     path: '**',
     redirectTo: 'home'
+  },
+  {
+    path: 'detalle',
+    loadChildren: () => import('./pages/admin/usuarios/detalle/detalle.module').then( m => m.DetallePageModule)
   }
 ];
 

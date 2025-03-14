@@ -59,4 +59,19 @@
         </ion-item>
       </ion-list>
 
-      <ng-templ
+      <ng-template #noDirecciones>
+        <div class="ion-text-center ion-padding">
+          <ion-text color="medium">
+            <p>No se encontraron direcciones</p>
+          </ion-text>
+        </div>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-loading [isOpen]="isLoading" message="Cargando direcciones..."></ion-loading>
+</ion-content>

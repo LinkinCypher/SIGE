@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>SIGE - Iniciar Sesión</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="login-container">
+    <div class="logo-container">
+      <ion-img src="assets/icon/favicon.png" alt="SIGE Logo"></ion-img>
+      <h2>Sistema de Gestión</h2>
+    </div>
+
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title class="ion-text-center">Iniciar Sesión</ion-card-title>
+        </ion-card-header>
+        
+        <ion-card-content>
+          <ion-item>
+            <ion-label position="floating">Usuario</ion-label>
+            <ion-input formControlName="username" type="text"></ion-input>
+          </ion-item>
+          <div class="error-message" *ngIf="loginForm.get('username')?.errors && loginForm.get('username')?.touched">
+            <span *ngIf="loginForm.get('username')?.errors?.['required']">El usuario es requerido</span>
+          </div>
+
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input formControlName="password" type="password"></ion-input>
+          </ion-item>
+          <div class="error-message" *ngIf="loginForm.get('password')?.errors && loginForm.get('password')?.touched">
+            <span *ngIf="loginForm.get('password')?.errors?.['required']">La contraseña es requerida</span>
+          </div>
+
+          <div class="ion-padding-top">
+            <ion-button expand="block" type="submit" [disabled]="loginForm.invalid || isLoading">
+              <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+              <span *ngIf="!isLoading">Ingresar</span>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      </ion-card>
+    </form>
+  </div>
+</ion-content>

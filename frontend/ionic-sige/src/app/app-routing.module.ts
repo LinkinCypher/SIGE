@@ -49,8 +49,18 @@ const routes: Routes = [
     data: { permiso: 'permisos.asignar' }
   },
   {
+    path: 'admin/direcciones/lista',
+    loadChildren: () => import('./pages/admin/direcciones/lista/lista.module').then( m => m.ListaPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'direcciones.ver' }
+  },
+  {
     path: '**',
     redirectTo: 'home'
+  },
+  {
+    path: 'lista',
+    loadChildren: () => import('./pages/admin/direcciones/lista/lista.module').then( m => m.ListaPageModule)
   }
 ];
 

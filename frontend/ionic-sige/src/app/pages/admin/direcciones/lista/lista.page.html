@@ -1,0 +1,62 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Direcciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="crearDireccion()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Nueva Dirección
+        </ion-button>
+      </ion-col>
+      <ion-col>
+        <ion-segment [(ngModel)]="filtroActivo" (ionChange)="cambiarFiltro()">
+          <ion-segment-button value="true">
+            <ion-label>Activas</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="false">
+            <ion-label>Inactivas</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Lista de Direcciones</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-searchbar [(ngModel)]="terminoBusqueda" (ionInput)="filtrarDirecciones()" placeholder="Buscar dirección..."></ion-searchbar>
+
+      <ion-list *ngIf="direccionesFiltradas.length > 0; else noDirecciones">
+        <ion-item *ngFor="let direccion of direccionesFiltradas" detail (click)="verDetalle(direccion._id)">
+          <ion-icon name="business-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>{{ direccion.nombre }}</h2>
+            <p>Código: {{ direccion.codigo }}</p>
+            <p *ngIf="direccion.descripcion">{{ direccion.descripcion }}</p>
+          </ion-label>
+          <ion-badge slot="end" [color]="direccion.activo ? 'success' : 'danger'">
+            {{ direccion.activo ? 'Activa' : 'Inactiva' }}
+          </ion-badge>
+          <ion-buttons slot="end">
+            <ion-button (click)="editarDireccion(direccion._id, $event)" *ngIf="direccion.activo">
+              <ion-icon slot="icon-only" name="pencil-outline" color="primary"></ion-icon>
+            </ion-button>
+            <ion-button (click)="cambiarEstado(direccion, $event)">
+              <ion-icon slot="icon-only" [name]="direccion.activo ? 'close-circle-outline' : 'checkmark-circle-outline'" 
+                [color]="direccion.activo ? 'danger' : 'success'"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-list>
+
+      <ng-templ

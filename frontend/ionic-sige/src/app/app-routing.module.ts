@@ -6,12 +6,8 @@ import { PermisosGuard } from './guards/permisos.guard';
 const routes: Routes = [
   {
     path: '',
-    redirectTo: 'home',
+    redirectTo: 'dashboard',
     pathMatch: 'full'
-  },
-  {
-    path: '**',
-    redirectTo: 'home'
   },
   {
     path: 'login',
@@ -99,6 +95,11 @@ const routes: Routes = [
     loadChildren: () => import('./pages/admin/cargos/formulario/formulario.module').then(m => m.FormularioPageModule),
     canActivate: [AuthGuard, PermisosGuard],
     data: { permiso: 'cargos.editar' }
+  },
+  {
+    path: 'dashboard',
+    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule),
+    canActivate: [AuthGuard]
   },
 ];
 

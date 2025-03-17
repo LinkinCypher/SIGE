@@ -1,0 +1,15 @@
+.card-icon {
+    font-size: 1.4rem;
+    margin-right: 8px;
+    vertical-align: middle;
+  }
+  
+  ion-card {
+    cursor: pointer;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  ion-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }

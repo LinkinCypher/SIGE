@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Dashboard - SIGE</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Bienvenido al Sistema de Gestión</ion-card-title>
+            <ion-card-subtitle>{{ today | date:'fullDate' }}</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            <p>Seleccione una de las opciones del menú para comenzar a trabajar.</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row>
+      <ion-col size="12" size-md="6" size-lg="4" *ngIf="authService.hasPermission('usuarios.ver')">
+        <ion-card button (click)="navegarA('/admin/usuarios/lista')">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="people-outline" class="card-icon"></ion-icon>
+              Usuarios
+            </ion-card-title>
+            <ion-card-subtitle>{{ totalUsuarios }} usuarios activos</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            Gestione los usuarios del sistema, sus cargos y permisos.
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6" size-lg="4" *ngIf="authService.hasPermission('direcciones.ver')">
+        <ion-card button (click)="navegarA('/admin/direcciones/lista')">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="business-outline" class="card-icon"></ion-icon>
+              Direcciones
+            </ion-card-title>
+            <ion-card-subtitle>{{ totalDirecciones }} direcciones activas</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            Administre la estructura organizacional de su empresa.
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+      <ion-col size="12" size-md="6" size-lg="4" *ngIf="authService.hasPermission('cargos.ver')">
+        <ion-card button (click)="navegarA('/admin/cargos/lista')">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="briefcase-outline" class="card-icon"></ion-icon>
+              Cargos
+            </ion-card-title>
+            <ion-card-subtitle>{{ totalCargos }} cargos activos</ion-card-subtitle>
+          </ion-card-header>
+          <ion-card-content>
+            Gestione los cargos disponibles en cada dirección.
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <ion-row *ngIf="authService.hasPermission('permisos.asignar')">
+      <ion-col size="12">
+        <ion-card button (click)="navegarA('/admin/permisos/lista')">
+          <ion-card-header>
+            <ion-card-title>
+              <ion-icon name="key-outline" class="card-icon"></ion-icon>
+              Permisos y Seguridad
+            </ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Configure los permisos y accesos a las diferentes funcionalidades del sistema.
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-loading [isOpen]="isLoading" message="Cargando información..."></ion-loading>
+</ion-content>

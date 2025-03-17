@@ -55,13 +55,15 @@ const routes: Routes = [
     data: { permiso: 'direcciones.ver' }
   },
   {
+    path: 'admin/direcciones/detalle/:id',
+    loadChildren: () => import('./pages/admin/direcciones/detalle/detalle.module').then(m => m.DetallePageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'direcciones.ver' }
+  },
+  {
     path: '**',
     redirectTo: 'home'
   },
-  {
-    path: 'lista',
-    loadChildren: () => import('./pages/admin/direcciones/lista/lista.module').then( m => m.ListaPageModule)
-  }
 ];
 
 @NgModule({

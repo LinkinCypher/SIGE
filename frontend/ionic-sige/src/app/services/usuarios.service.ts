@@ -12,8 +12,26 @@ export class UsuariosService {
 
   constructor(private http: HttpClient) { }
 
-  getUsuarios(activo: boolean = true): Observable<Usuario[]> {
-    return this.http.get<Usuario[]>(`${this.apiUrl}?activo=${activo}`);
+  getUsuarios(activo: boolean = true, direccionId?: string, cargoId?: string): Observable<Usuario[]> {
+    let url = `${this.apiUrl}?`;
+    
+    if (activo !== undefined) {
+      url += `activo=${activo}&`;
+    }
+    
+    if (direccionId) {
+      url += `direccionId=${direccionId}&`;
+    }
+    
+    if (cargoId) {
+      url += `cargoId=${cargoId}&`;
+    }
+    
+    // Eliminar el último "&" o "?" si existe
+    url = url.endsWith('&') ? url.slice(0, -1) : url;
+    url = url.endsWith('?') ? url.slice(0, -1) : url;
+    
+    return this.http.get<Usuario[]>(url);
   }
 
   getUsuario(id: string): Observable<Usuario> {

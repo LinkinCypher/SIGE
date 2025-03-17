@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/cargos/lista"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle de Cargo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="editarCargo()" *ngIf="cargo?.activo">
+        <ion-icon slot="icon-only" name="pencil-outline"></ion-icon>
+      </ion-button>
+      <ion-button (click)="cambiarEstado()" [color]="cargo?.activo ? 'danger' : 'success'">
+        <ion-icon slot="icon-only" [name]="cargo?.activo ? 'close-circle-outline' : 'checkmark-circle-outline'"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card *ngIf="cargo">
+    <ion-card-header>
+      <ion-card-subtitle>
+        <ion-badge [color]="cargo.activo ? 'success' : 'danger'">
+          {{ cargo.activo ? 'Activo' : 'Inactivo' }}
+        </ion-badge>
+      </ion-card-subtitle>
+      <ion-card-title>{{ cargo.nombre }}</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list lines="none">
+        <ion-item *ngIf="cargo.descripcion">
+          <ion-label>
+            <h3>Descripción</h3>
+            <p>{{ cargo.descripcion }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="direccion">
+          <ion-label>
+            <h3>Dirección</h3>
+            <p>{{ direccion.nombre }}</p>
+          </ion-label>
+          <ion-button slot="end" fill="clear" (click)="verDireccion()">
+            <ion-icon slot="icon-only" name="eye-outline"></ion-icon>
+          </ion-button>
+        </ion-item>
+        <ion-item>
+          <ion-label>
+            <h3>Fecha de creación</h3>
+            <p>{{ cargo.fechaCreacion | date:'dd/MM/yyyy HH:mm' }}</p>
+          </ion-label>
+        </ion-item>
+        <ion-item *ngIf="cargo.fechaActualizacion">
+          <ion-label>
+            <h3>Última actualización</h3>
+            <p>{{ cargo.fechaActualizacion | date:'dd/MM/yyyy HH:mm' }}</p>
+          </ion-label>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-card *ngIf="usuarios.length > 0">
+    <ion-card-header>
+      <ion-card-title>Usuarios Asignados</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-list>
+        <ion-item *ngFor="let usuario of usuarios" detail (click)="verDetalleUsuario(usuario._id)">
+          <ion-icon name="person-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+            <p>{{ usuario.username }}</p>
+          </ion-label>
+          <ion-badge slot="end" [color]="usuario.activo ? 'success' : 'danger'">
+            {{ usuario.activo ? 'Activo' : 'Inactivo' }}
+          </ion-badge>
+        </ion-item>
+      </ion-list>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-loading [isOpen]="isLoading" message="Cargando información..."></ion-loading>
+</ion-content>

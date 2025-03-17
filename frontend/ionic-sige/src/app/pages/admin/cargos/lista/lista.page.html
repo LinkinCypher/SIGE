@@ -1,0 +1,90 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>
+      Cargos{{ direccionSeleccionada ? ' - ' + direccionSeleccionada.nombre : '' }}
+    </ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-button expand="block" (click)="crearCargo()">
+          <ion-icon slot="start" name="add-outline"></ion-icon>
+          Nuevo Cargo
+        </ion-button>
+      </ion-col>
+      <ion-col *ngIf="!direccionId">
+        <ion-item>
+          <ion-label>Dirección</ion-label>
+          <ion-select [(ngModel)]="filtrodireccionId" (ionChange)="cambiarFiltroDireccion()">
+            <ion-select-option [value]="''">Todas</ion-select-option>
+            <ion-select-option *ngFor="let dir of direcciones" [value]="dir._id">
+              {{ dir.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-col>
+      <ion-col>
+        <ion-segment [(ngModel)]="filtroActivo" (ionChange)="cambiarFiltro()">
+          <ion-segment-button value="true">
+            <ion-label>Activos</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="false">
+            <ion-label>Inactivos</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Lista de Cargos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-searchbar [(ngModel)]="terminoBusqueda" (ionInput)="filtrarCargos()" placeholder="Buscar cargo..."></ion-searchbar>
+      <ion-list *ngIf="cargosFiltrados.length > 0; else noCargos">
+        <ion-item *ngFor="let cargo of cargosFiltrados" detail (click)="verDetalle(cargo._id)">
+          <ion-icon name="briefcase-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>
+            <h2>{{ cargo.nombre }}</h2>
+            <p *ngIf="cargo.descripcion">{{ cargo.descripcion }}</p>
+            <p *ngIf="!direccionId">
+              <ion-badge color="medium">{{ obtenerNombreDireccion(cargo.direccionId) }}</ion-badge>
+            </p>
+          </ion-label>
+          <ion-badge slot="end" [color]="cargo.activo ? 'success' : 'danger'">
+            {{ cargo.activo ? 'Activo' : 'Inactivo' }}
+          </ion-badge>
+          <ion-buttons slot="end">
+            <ion-button (click)="editarCargo(cargo._id, $event)" *ngIf="cargo.activo">
+              <ion-icon slot="icon-only" name="pencil-outline" color="primary"></ion-icon>
+            </ion-button>
+            <ion-button (click)="cambiarEstado(cargo, $event)">
+              <ion-icon slot="icon-only" [name]="cargo.activo ? 'close-circle-outline' : 'checkmark-circle-outline'"
+                [color]="cargo.activo ? 'danger' : 'success'"></ion-icon>
+            </ion-button>
+          </ion-buttons>
+        </ion-item>
+      </ion-list>
+      <ng-template #noCargos>
+        <div class="ion-text-center ion-padding">
+          <ion-text color="medium">
+            <p>No se encontraron cargos</p>
+          </ion-text>
+        </div>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-loading [isOpen]="isLoading" message="Cargando cargos..."></ion-loading>
+</ion-content>

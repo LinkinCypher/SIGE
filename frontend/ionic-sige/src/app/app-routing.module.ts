@@ -10,6 +10,10 @@ const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: '**',
+    redirectTo: 'home'
+  },
+  {
     path: 'login',
     loadChildren: () => import('./pages/login/login.module').then( m => m.LoginPageModule)
   },
@@ -73,8 +77,16 @@ const routes: Routes = [
     data: { permiso: 'direcciones.editar' }
   },
   {
-    path: '**',
-    redirectTo: 'home'
+    path: 'admin/cargos/lista',
+    loadChildren: () => import('./pages/admin/cargos/lista/lista.module').then(m => m.ListaPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'cargos.ver' }
+  },
+  {
+    path: 'admin/cargos/detalle/:id',
+    loadChildren: () => import('./pages/admin/cargos/detalle/detalle.module').then(m => m.DetallePageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'cargos.ver' }
   },
 ];
 

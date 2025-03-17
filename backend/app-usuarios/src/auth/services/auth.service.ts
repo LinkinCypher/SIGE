@@ -16,36 +16,55 @@ export class AuthService {
   async validateUser(username: string, password: string): Promise<any> {
     try {
       const user = await this.usuariosService.findByUsername(username);
-      
-      // Verificar si el usuario está activo
+  
+      if (!user) {
+        console.log('Usuario no encontrado:', username);
+        return null;
+      }
+  
       if (!user.activo) {
+        console.log('Usuario inactivo:', username);
         throw new UnauthorizedException('Usuario inactivo');
       }
-      
-      // Verificar la contraseña
+  
       const isMatch = await bcrypt.compare(password, user.password);
-      
-      if (isMatch) {
-        // Usar destructuring directamente sin llamar a toObject()
-        const { password, ...result } = user as any;
-        return result;
+      if (!isMatch) {
+        console.log('Contraseña incorrecta para:', username);
+        return null;
       }
-      
-      return null;
+  
+      const userObject = user as any;
+      userObject._id = userObject._id?.toString() || ''; // Convertir a string si existe
+  
+      console.log('Usuario validado correctamente:', username);
+      return userObject;
     } catch (error) {
+      console.error('Error en validateUser:', error);
       return null;
     }
   }
+  
 
+  
   async login(loginDto: LoginDto) {
+    console.log('Intentando login con:', loginDto.username);
+
     const user = await this.validateUser(loginDto.username, loginDto.password);
     
     if (!user) {
+      console.log('Autenticación fallida para:', loginDto.username);
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
+    console.log('Usuario autenticado:', loginDto.username);
+
     // Actualizar el último acceso
-    await this.usuariosService.updateLastAccess(user._id);
+    if (user._id) {
+      await this.usuariosService.updateLastAccess(user._id);
+    } else {
+      console.error('Error: _id del usuario es undefined');
+      throw new UnauthorizedException('No se pudo obtener el ID del usuario');
+    }
 
     // Obtener los códigos de permisos del usuario
     const permisos = await this.usuarioPermisosService.getPermisosDeUsuario(user._id);

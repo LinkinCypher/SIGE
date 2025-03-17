@@ -88,6 +88,18 @@ const routes: Routes = [
     canActivate: [AuthGuard, PermisosGuard],
     data: { permiso: 'cargos.ver' }
   },
+  {
+    path: 'admin/cargos/crear',
+    loadChildren: () => import('./pages/admin/cargos/formulario/formulario.module').then(m => m.FormularioPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'cargos.crear' }
+  },
+  {
+    path: 'admin/cargos/editar/:id',
+    loadChildren: () => import('./pages/admin/cargos/formulario/formulario.module').then(m => m.FormularioPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'cargos.editar' }
+  },
 ];
 
 @NgModule({

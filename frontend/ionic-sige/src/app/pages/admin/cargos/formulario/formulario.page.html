@@ -1,0 +1,60 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="esNuevoCargo ? '/admin/cargos/lista' : '/admin/cargos/detalle/' + cargoId"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ esNuevoCargo ? 'Crear' : 'Editar' }} Cargo</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="cargoForm" (ngSubmit)="guardarCargo()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Información del Cargo</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Nombre <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="nombre" type="text"></ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="cargoForm.get('nombre')?.touched && cargoForm.get('nombre')?.errors">
+          <ion-text color="danger" *ngIf="cargoForm.get('nombre')?.errors?.['required']">
+            El nombre es requerido
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Descripción</ion-label>
+          <ion-textarea formControlName="descripcion" rows="4"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Dirección <ion-text color="danger">*</ion-text></ion-label>
+          <ion-select formControlName="direccionId" interface="action-sheet" [disabled]="direccionIdFijada">
+            <ion-select-option [value]="direccion._id" *ngFor="let direccion of direcciones">
+              {{ direccion.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+        <div class="error-message" *ngIf="cargoForm.get('direccionId')?.touched && cargoForm.get('direccionId')?.errors">
+          <ion-text color="danger" *ngIf="cargoForm.get('direccionId')?.errors?.['required']">
+            La dirección es requerida
+          </ion-text>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit" [disabled]="cargoForm.invalid || isLoading">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">{{ esNuevoCargo ? 'Crear' : 'Guardar' }} Cargo</span>
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="cancelar()">
+        Cancelar
+      </ion-button>
+    </div>
+  </form>
+
+  <ion-loading [isOpen]="isLoading" message="Guardando..."></ion-loading>
+</ion-content>

@@ -61,6 +61,18 @@ const routes: Routes = [
     data: { permiso: 'direcciones.ver' }
   },
   {
+    path: 'admin/direcciones/crear',
+    loadChildren: () => import('./pages/admin/direcciones/formulario/formulario.module').then(m => m.FormularioPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'direcciones.crear' }
+  },
+  {
+    path: 'admin/direcciones/editar/:id',
+    loadChildren: () => import('./pages/admin/direcciones/formulario/formulario.module').then(m => m.FormularioPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'direcciones.editar' }
+  },
+  {
     path: '**',
     redirectTo: 'home'
   },

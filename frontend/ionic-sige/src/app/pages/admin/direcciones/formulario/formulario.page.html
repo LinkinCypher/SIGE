@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button [defaultHref]="esNuevaDireccion ? '/admin/direcciones/lista' : '/admin/direcciones/detalle/' + direccionId"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ esNuevaDireccion ? 'Crear' : 'Editar' }} Dirección</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="direccionForm" (ngSubmit)="guardarDireccion()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Información de la Dirección</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Nombre <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="nombre" type="text"></ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="direccionForm.get('nombre')?.touched && direccionForm.get('nombre')?.errors">
+          <ion-text color="danger" *ngIf="direccionForm.get('nombre')?.errors?.['required']">
+            El nombre es requerido
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Código <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="codigo" type="text"></ion-input>
+        </ion-item>
+        <div class="error-message" *ngIf="direccionForm.get('codigo')?.touched && direccionForm.get('codigo')?.errors">
+          <ion-text color="danger" *ngIf="direccionForm.get('codigo')?.errors?.['required']">
+            El código es requerido
+          </ion-text>
+          <ion-text color="danger" *ngIf="direccionForm.get('codigo')?.errors?.['pattern']">
+            El código solo puede contener letras, números, guiones y guiones bajos
+          </ion-text>
+        </div>
+
+        <ion-item>
+          <ion-label position="floating">Descripción</ion-label>
+          <ion-textarea formControlName="descripcion" rows="4"></ion-textarea>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit" [disabled]="direccionForm.invalid || isLoading">
+        <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+        <span *ngIf="!isLoading">{{ esNuevaDireccion ? 'Crear' : 'Guardar' }} Dirección</span>
+      </ion-button>
+      <ion-button expand="block" fill="outline" (click)="cancelar()">
+        Cancelar
+      </ion-button>
+    </div>
+  </form>
+
+  <ion-loading [isOpen]="isLoading" message="Guardando..."></ion-loading>
+</ion-content>

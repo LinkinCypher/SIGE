@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/permisos/lista"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Asignación Masiva de Permisos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Seleccionar Usuarios</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-searchbar [(ngModel)]="filtroUsuarios" (ionInput)="filtrarUsuarios()" placeholder="Buscar usuario..."></ion-searchbar>
+            
+            <ion-list>
+              <ion-item *ngFor="let usuario of usuariosFiltrados">
+                <ion-checkbox [(ngModel)]="usuario.seleccionado" slot="start"></ion-checkbox>
+                <ion-label>
+                  <h2>{{ usuario.nombre }} {{ usuario.apellido }}</h2>
+                  <p>{{ usuario.username }}</p>
+                  <p>{{ usuario.cargo || 'Sin cargo' }} - {{ usuario.direccion || 'Sin dirección' }}</p>
+                </ion-label>
+              </ion-item>
+            </ion-list>
+            
+            <div class="ion-padding-top">
+              <ion-button expand="block" fill="outline" (click)="seleccionarTodos(true)">
+                Seleccionar Todos
+              </ion-button>
+              <ion-button expand="block" fill="outline" (click)="seleccionarTodos(false)">
+                Deseleccionar Todos
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6">
+        <ion-card>
+          <ion-card-header>
+            <ion-card-title>Seleccionar Permisos</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-searchbar [(ngModel)]="filtroPermisos" (ionInput)="filtrarPermisos()" placeholder="Buscar permiso..."></ion-searchbar>
+            
+            <ion-list>
+              <ion-item-group *ngFor="let grupo of permisosAgrupadosFiltrados | keyvalue">
+                <ion-item-divider color="light">
+                  <ion-label>{{ grupo.key }}</ion-label>
+                </ion-item-divider>
+                
+                <ion-item *ngFor="let permiso of grupo.value">
+                  <ion-checkbox [(ngModel)]="permiso.seleccionado" slot="start"></ion-checkbox>
+                  <ion-label>
+                    <h2>{{ permiso.nombre }}</h2>
+                    <p>{{ permiso.descripcion }}</p>
+                    <p><small>{{ permiso.codigo }}</small></p>
+                  </ion-label>
+                </ion-item>
+              </ion-item-group>
+            </ion-list>
+            
+            <div class="ion-padding-top">
+              <ion-button expand="block" fill="outline" (click)="seleccionarTodosPermisos(true)">
+                Seleccionar Todos
+              </ion-button>
+              <ion-button expand="block" fill="outline" (click)="seleccionarTodosPermisos(false)">
+                Deseleccionar Todos
+              </ion-button>
+            </div>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+  
+  <div class="ion-padding">
+    <ion-button expand="block" (click)="asignarPermisos()" [disabled]="!haySeleccion() || isLoading">
+      <ion-spinner name="crescent" *ngIf="isLoading"></ion-spinner>
+      <span *ngIf="!isLoading">Asignar Permisos</span>
+    </ion-button>
+  </div>
+  
+  <ion-loading [isOpen]="isLoading" message="Procesando..."></ion-loading>
+</ion-content>

@@ -70,7 +70,7 @@
       </ion-col>
     </ion-row>
 
-    <ion-row *ngIf="authService.hasPermission('permisos.asignar')">
+    <ion-row *ngIf="authService.hasPermission('permisos.ver')">
       <ion-col size="12">
         <ion-card button (click)="navegarA('/admin/permisos/lista')">
           <ion-card-header>

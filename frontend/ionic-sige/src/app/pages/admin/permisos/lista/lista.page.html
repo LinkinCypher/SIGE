@@ -1,0 +1,78 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Gestión de Permisos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button *ngIf="authService.hasPermission('permisos.asignar')" (click)="irAAsignacionMasiva()">
+        <ion-icon slot="icon-only" name="people-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-button expand="block" *ngIf="authService.hasPermission('permisos.asignar')" 
+              color="primary" class="ion-margin-bottom" (click)="irAAsignacionMasiva()">
+    <ion-icon slot="start" name="people-outline"></ion-icon>
+    Asignación Masiva de Permisos
+  </ion-button>
+  <ion-grid>
+    <ion-row>
+      <ion-col>
+        <ion-segment [(ngModel)]="filtroActivo" (ionChange)="cambiarFiltro()">
+          <ion-segment-button value="true">
+            <ion-label>Activos</ion-label>
+          </ion-segment-button>
+          <ion-segment-button value="false">
+            <ion-label>Inactivos</ion-label>
+          </ion-segment-button>
+        </ion-segment>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>Lista de Permisos</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-searchbar [(ngModel)]="terminoBusqueda" (ionInput)="filtrarPermisos()" placeholder="Buscar permiso..."></ion-searchbar>
+      
+      <ion-list *ngIf="permisosFiltrados.length > 0; else noPermisos">
+        <ion-item-group *ngFor="let grupo of permisosAgrupados | keyvalue">
+          <ion-item-divider color="light">
+            <ion-label>{{ grupo.key }}</ion-label>
+          </ion-item-divider>
+          
+          <ion-item *ngFor="let permiso of grupo.value">
+            <ion-icon name="key-outline" slot="start" color="primary"></ion-icon>
+            <ion-label>
+              <h2>{{ permiso.nombre }}</h2>
+              <p>{{ permiso.descripcion }}</p>
+              <p><small>{{ permiso.codigo }}</small></p>
+            </ion-label>
+            <ion-badge slot="end" [color]="permiso.activo ? 'success' : 'danger'">
+              {{ permiso.activo ? 'Activo' : 'Inactivo' }}
+            </ion-badge>
+          </ion-item>
+        </ion-item-group>
+      </ion-list>
+      
+      <ng-template #noPermisos>
+        <div class="ion-text-center ion-padding">
+          <ion-text color="medium">
+            <p>No se encontraron permisos</p>
+          </ion-text>
+        </div>
+      </ng-template>
+    </ion-card-content>
+  </ion-card>
+
+  <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  
+  <ion-loading [isOpen]="isLoading" message="Cargando permisos..."></ion-loading>
+</ion-content>

@@ -54,6 +54,18 @@ const routes: Routes = [
     data: { permiso: 'permisos.asignar' }
   },
   {
+    path: 'admin/permisos/lista',
+    loadChildren: () => import('./pages/admin/permisos/lista/lista.module').then(m => m.ListaPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'permisos.ver' }
+  },
+  {
+    path: 'admin/permisos/asignacion-masiva',
+    loadChildren: () => import('./pages/admin/permisos/asignacion-masiva/asignacion-masiva.module').then(m => m.AsignacionMasivaPageModule),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'permisos.asignar' }
+  },
+  {
     path: 'admin/direcciones/lista',
     loadChildren: () => import('./pages/admin/direcciones/lista/lista.module').then( m => m.ListaPageModule),
     canActivate: [AuthGuard, PermisosGuard],

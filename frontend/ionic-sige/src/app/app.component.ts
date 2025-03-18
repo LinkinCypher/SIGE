@@ -23,10 +23,11 @@ interface AppPage {
 export class AppComponent implements OnInit {
   // Lista completa de páginas
   private allPages: AppPage[] = [
-    { title: 'Inicio', url: 'dashboard', icon: 'home' },
+    { title: 'Inicio', url: '/dashboard', icon: 'home-outline' },
     { title: 'Usuarios', url: '/admin/usuarios/lista', icon: 'people-outline', permiso: 'usuarios.ver' },
     { title: 'Direcciones', url: '/admin/direcciones/lista', icon: 'business-outline', permiso: 'direcciones.ver' },
     { title: 'Cargos', url: '/admin/cargos/lista', icon: 'briefcase-outline', permiso: 'cargos.ver' },
+    { title: 'Permisos', url: '/admin/permisos/lista', icon: 'key-outline', permiso: 'permisos.ver' }
   ];
   
   // Páginas filtradas según permisos

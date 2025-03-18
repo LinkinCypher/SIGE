@@ -18,6 +18,7 @@
     <ion-icon slot="start" name="people-outline"></ion-icon>
     Asignación Masiva de Permisos
   </ion-button>
+
   <ion-grid>
     <ion-row>
       <ion-col>
@@ -39,13 +40,15 @@
     </ion-card-header>
     <ion-card-content>
       <ion-searchbar [(ngModel)]="terminoBusqueda" (ionInput)="filtrarPermisos()" placeholder="Buscar permiso..."></ion-searchbar>
-      
+
       <ion-list *ngIf="permisosFiltrados.length > 0; else noPermisos">
+        <!-- 🔹 Agrupación de permisos por módulo -->
         <ion-item-group *ngFor="let grupo of permisosAgrupados | keyvalue">
           <ion-item-divider color="light">
             <ion-label>{{ grupo.key }}</ion-label>
           </ion-item-divider>
-          
+
+          <!-- 🔹 Lista de permisos dentro del grupo -->
           <ion-item *ngFor="let permiso of grupo.value">
             <ion-icon name="key-outline" slot="start" color="primary"></ion-icon>
             <ion-label>
@@ -56,10 +59,17 @@
             <ion-badge slot="end" [color]="permiso.activo ? 'success' : 'danger'">
               {{ permiso.activo ? 'Activo' : 'Inactivo' }}
             </ion-badge>
+            <ion-buttons slot="end">
+              <ion-button (click)="cambiarEstado(permiso, $event)">
+                <ion-icon slot="icon-only" [name]="permiso.activo ? 'close-circle-outline' : 'checkmark-circle-outline'"
+                          [color]="permiso.activo ? 'danger' : 'success'"></ion-icon>
+              </ion-button>
+            </ion-buttons>
           </ion-item>
         </ion-item-group>
       </ion-list>
-      
+
+      <!-- 🔹 Mensaje cuando no hay permisos -->
       <ng-template #noPermisos>
         <div class="ion-text-center ion-padding">
           <ion-text color="medium">
@@ -73,6 +83,6 @@
   <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
-  
+
   <ion-loading [isOpen]="isLoading" message="Cargando permisos..."></ion-loading>
 </ion-content>

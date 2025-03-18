@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { IonicModule, ToastController } from '@ionic/angular';
-import { Router } from '@angular/router'; // Añadir esta importación
+import { IonicModule, ToastController, AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
 import { PermisosService, Permiso } from '../../../../services/permisos.service';
-import { AuthService } from '../../../../services/auth.service'; // Añadir esta importación
+import { AuthService } from '../../../../services/auth.service'; 
 
 @Component({
   selector: 'app-lista',
@@ -25,7 +25,8 @@ export class ListaPage implements OnInit {
     private permisosService: PermisosService,
     private toastController: ToastController,
     private router: Router,
-    public authService: AuthService 
+    public authService: AuthService,
+    private alertController: AlertController
   ) { }
 
   ngOnInit() {
@@ -106,5 +107,49 @@ export class ListaPage implements OnInit {
 
   irAAsignacionMasiva() {
     this.router.navigate(['/admin/permisos/asignacion-masiva']);
+  }
+
+  async cambiarEstado(permiso: Permiso, event: Event) {
+    // Evitar que el evento se propague (para no abrir el detalle)
+    event.stopPropagation();
+    
+    if (!permiso._id) return;
+    
+    const accion = permiso.activo ? 'desactivar' : 'activar';
+    
+    const alert = await this.alertController.create({
+      header: `${accion.charAt(0).toUpperCase() + accion.slice(1)} permiso`,
+      message: `¿Está seguro que desea ${accion} el permiso "${permiso.nombre}"?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Confirmar',
+          handler: () => {
+            this.isLoading = true;
+            
+            const metodo = permiso.activo
+              ? this.permisosService.desactivarPermiso(permiso._id!)
+              : this.permisosService.activarPermiso(permiso._id!);
+              
+            metodo.subscribe({
+              next: () => {
+                this.isLoading = false;
+                this.mostrarToast(`Permiso ${accion}do correctamente`, 'success');
+                this.cargarPermisos();
+              },
+              error: (error) => {
+                this.isLoading = false;
+                this.mostrarToast(`Error al ${accion} permiso: ` + (error.error?.message || 'Error de servidor'), 'danger');
+              }
+            });
+          }
+        }
+      ]
+    });
+    
+    await alert.present();
   }
 }

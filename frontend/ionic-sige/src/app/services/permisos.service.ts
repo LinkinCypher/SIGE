@@ -49,4 +49,12 @@ export class PermisosService {
   revocarTodosLosPermisos(usuarioId: string): Observable<any> {
     return this.http.delete(`${this.usuarioPermisosUrl}/${usuarioId}/todos`);
   }
+
+  activarPermiso(id: string): Observable<Permiso> {
+    return this.http.patch<Permiso>(`${this.apiUrl}/${id}/activar`, {});
+  }
+  
+  desactivarPermiso(id: string): Observable<Permiso> {
+    return this.http.patch<Permiso>(`${this.apiUrl}/${id}/desactivar`, {});
+  }
 }

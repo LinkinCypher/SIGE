@@ -19,6 +19,11 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'dashboard',
+    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'admin/usuarios/lista',
     loadChildren: () => import('./pages/admin/usuarios/lista/lista.page').then( m => m.ListaPage),
     canActivate: [AuthGuard, PermisosGuard],
@@ -95,11 +100,6 @@ const routes: Routes = [
     loadChildren: () => import('./pages/admin/cargos/formulario/formulario.module').then(m => m.FormularioPageModule),
     canActivate: [AuthGuard, PermisosGuard],
     data: { permiso: 'cargos.editar' }
-  },
-  {
-    path: 'dashboard',
-    loadChildren: () => import('./pages/dashboard/dashboard.module').then(m => m.DashboardPageModule),
-    canActivate: [AuthGuard]
   },
 ];
 

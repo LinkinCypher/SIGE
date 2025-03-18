@@ -41,7 +41,7 @@ export class FormularioPage implements OnInit {
       apellido: ['', Validators.required],
       username: ['', Validators.required],
       password: ['', [Validators.required, Validators.minLength(6)]],
-      fechaNacimiento: ['', Validators.required],
+      fechaNacimiento: [this.esNuevoUsuario ? new Date().toISOString() : '', Validators.required],
       email: ['', Validators.email],
       telefono: [''],
       direccionId: ['', Validators.required],
@@ -160,9 +160,14 @@ export class FormularioPage implements OnInit {
   }
 
   async guardarUsuario() {
+    console.log('Estado del formulario:', this.usuarioForm.status);
+    console.log('Errores del formulario:', this.usuarioForm.errors);
+    console.log('Errores por campo:', this.usuarioForm.controls);
+    
     if (this.usuarioForm.invalid) {
       // Marcar todos los campos como tocados para mostrar los errores
       Object.keys(this.usuarioForm.controls).forEach(key => {
+        console.log(`Campo ${key}:`, this.usuarioForm.get(key)?.errors);
         this.usuarioForm.get(key)?.markAsTouched();
       });
       return;

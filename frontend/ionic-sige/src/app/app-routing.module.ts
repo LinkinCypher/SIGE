@@ -113,6 +113,29 @@ const routes: Routes = [
     canActivate: [AuthGuard, PermisosGuard],
     data: { permiso: 'cargos.editar' }
   },
+  {
+    path: 'admin/paginas/lista',
+    loadComponent: () => import('./pages/admin/paginas/lista/lista.page').then(m => m.ListaPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { requierePermiso: 'paginas.ver' }
+  },
+  {
+    path: 'admin/paginas/crear',
+    loadComponent: () => import('./pages/admin/paginas/crear/crear.page').then(m => m.CrearPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { requierePermiso: 'paginas.crear' }
+  },
+  {
+    path: 'admin/paginas/editar/:id',
+    loadComponent: () => import('./pages/admin/paginas/editar/editar.page').then(m => m.EditarPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { requierePermiso: 'paginas.editar' }
+  },
+  {
+    path: 'admin/paginas',
+    redirectTo: 'admin/paginas/lista',
+    pathMatch: 'full'
+  }
 ];
 
 @NgModule({

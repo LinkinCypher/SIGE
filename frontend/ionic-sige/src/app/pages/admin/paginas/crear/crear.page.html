@@ -1,0 +1,118 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/admin/paginas/lista"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Nueva Página</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="paginaForm" (ngSubmit)="guardar()">
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Información Básica</ion-card-title>
+        <ion-card-subtitle>Datos generales de la página</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="floating">Nombre <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="nombre" type="text"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="paginaForm.get('nombre')?.errors?.['required'] && paginaForm.get('nombre')?.touched">
+          El nombre es requerido
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="floating">Código <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="codigo" type="text"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="paginaForm.get('codigo')?.errors?.['required'] && paginaForm.get('codigo')?.touched">
+          El código es requerido
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="floating">Descripción</ion-label>
+          <ion-textarea formControlName="descripcion" rows="3"></ion-textarea>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="floating">Ruta <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="ruta" type="text"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="paginaForm.get('ruta')?.errors?.['required'] && paginaForm.get('ruta')?.touched">
+          La ruta es requerida
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="floating">Icono</ion-label>
+          <ion-input formControlName="icono" type="text"></ion-input>
+        </ion-item>
+        <ion-note color="primary">
+          Nombre del icono de Ionicons (Ej: home, person, settings)
+        </ion-note>
+
+        <ion-item>
+          <ion-label position="floating">Orden <ion-text color="danger">*</ion-text></ion-label>
+          <ion-input formControlName="orden" type="number"></ion-input>
+        </ion-item>
+        <ion-note color="danger" *ngIf="paginaForm.get('orden')?.errors?.['required'] && paginaForm.get('orden')?.touched">
+          El orden es requerido
+        </ion-note>
+
+        <ion-item>
+          <ion-label>Tipo</ion-label>
+          <ion-select formControlName="esModulo">
+            <ion-select-option [value]="false">Página Individual</ion-select-option>
+            <ion-select-option [value]="true">Módulo (contiene páginas)</ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Estado</ion-label>
+          <ion-select formControlName="activo">
+            <ion-select-option [value]="true">Activo</ion-select-option>
+            <ion-select-option [value]="false">Inactivo</ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+      <ion-card-header>
+        <ion-card-title>Relaciones</ion-card-title>
+        <ion-card-subtitle>Permisos y organización jerárquica</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-item>
+          <ion-label>Permiso requerido <ion-text color="danger">*</ion-text></ion-label>
+          <ion-select formControlName="permisoId">
+            <ion-select-option [value]="null">Sin permiso</ion-select-option>
+            <ion-select-option *ngFor="let permiso of permisos" [value]="permiso._id">
+              {{ permiso.nombre }} ({{ permiso.codigo }})
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+
+        <ion-item>
+          <ion-label>Módulo padre</ion-label>
+          <ion-select formControlName="moduloPadreId">
+            <ion-select-option [value]="null">Nivel Superior (Sin padre)</ion-select-option>
+            <ion-select-option *ngFor="let modulo of modulos" [value]="modulo._id">
+              {{ modulo.nombre }}
+            </ion-select-option>
+          </ion-select>
+        </ion-item>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="ion-padding">
+      <ion-button expand="block" type="submit" [disabled]="paginaForm.invalid">
+        Crear Página
+      </ion-button>
+      <ion-button expand="block" fill="outline" type="button" routerLink="/admin/paginas/lista">
+        Cancelar
+      </ion-button>
+    </div>
+  </form>
+</ion-content>

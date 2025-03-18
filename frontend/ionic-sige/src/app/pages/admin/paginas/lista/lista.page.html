@@ -1,0 +1,83 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Gestión de Páginas</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/admin/paginas/crear">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="segmento" (ionChange)="cambiarSegmento()">
+      <ion-segment-button value="todos">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="modulos">
+        <ion-label>Módulos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="paginas">
+        <ion-label>Páginas</ion-label>
+      </ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-searchbar
+      [(ngModel)]="terminoBusqueda"
+      (ionChange)="buscar()"
+      placeholder="Buscar por nombre o código"
+      animated
+    ></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="refrescar($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ion-list>
+    <ion-item-sliding *ngFor="let pagina of paginasFiltradas">
+      <ion-item [routerLink]="['/admin/paginas/editar', pagina._id]" detail>
+        <ion-icon [name]="pagina.icono || 'document'" slot="start" [color]="pagina.esModulo ? 'primary' : 'medium'"></ion-icon>
+        <ion-label>
+          <h2>{{ pagina.nombre }}</h2>
+          <p>{{ pagina.codigo }}</p>
+          <p>{{ pagina.descripcion }}</p>
+        </ion-label>
+        <ion-badge slot="end" color="success" *ngIf="pagina.activo">Activo</ion-badge>
+        <ion-badge slot="end" color="medium" *ngIf="!pagina.activo">Inactivo</ion-badge>
+        <ion-badge slot="end" color="primary" *ngIf="pagina.esModulo">Módulo</ion-badge>
+      </ion-item>
+      
+      <ion-item-options side="end">
+        <ion-item-option color="tertiary" (click)="verDetalles(pagina)">
+          <ion-icon slot="icon-only" name="eye"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="primary" [routerLink]="['/admin/paginas/editar', pagina._id]">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="confirmarEliminar(pagina)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="success" (click)="cambiarEstado(pagina)" *ngIf="!pagina.activo">
+          <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="warning" (click)="cambiarEstado(pagina)" *ngIf="pagina.activo">
+          <ion-icon slot="icon-only" name="close-circle"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-card *ngIf="paginasFiltradas.length === 0">
+    <ion-card-header>
+      <ion-card-title>Sin resultados</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      No se encontraron páginas que coincidan con los criterios de búsqueda.
+    </ion-card-content>
+  </ion-card>
+</ion-content>

@@ -25,13 +25,13 @@ const routes: Routes = [
   },
   {
     path: 'admin/usuarios/lista',
-    loadChildren: () => import('./pages/admin/usuarios/lista/lista.page').then( m => m.ListaPage),
+    loadComponent: () => import('./pages/admin/usuarios/lista/lista.page').then(m => m.ListaPage),
     canActivate: [AuthGuard, PermisosGuard],
     data: { permiso: 'usuarios.ver' }
   },
   {
     path: 'admin/usuarios/detalle/:id',
-    loadChildren: () => import('./pages/admin/usuarios/detalle/detalle.page').then( m => m.DetallePage),
+    loadComponent: () => import('./pages/admin/usuarios/detalle/detalle.page').then( m => m.DetallePage),
     canActivate: [AuthGuard, PermisosGuard],
     data: { permiso: 'usuarios.ver' }
   },

@@ -15,7 +15,7 @@ const routes: Routes = [
   },
   {
     path: 'home',
-    loadChildren: () => import('./pages/home/home.page').then( m => m.HomePage),
+    loadComponent: () => import('./pages/home/home.page').then( m => m.HomePage),
     canActivate: [AuthGuard]
   },
   {
@@ -117,19 +117,19 @@ const routes: Routes = [
     path: 'admin/paginas/lista',
     loadComponent: () => import('./pages/admin/paginas/lista/lista.page').then(m => m.ListaPage),
     canActivate: [AuthGuard, PermisosGuard],
-    data: { requierePermiso: 'paginas.ver' }
+    data: { permiso: 'paginas.ver' }
   },
   {
     path: 'admin/paginas/crear',
     loadComponent: () => import('./pages/admin/paginas/crear/crear.page').then(m => m.CrearPage),
     canActivate: [AuthGuard, PermisosGuard],
-    data: { requierePermiso: 'paginas.crear' }
+    data: { permiso: 'paginas.crear' }
   },
   {
     path: 'admin/paginas/editar/:id',
     loadComponent: () => import('./pages/admin/paginas/editar/editar.page').then(m => m.EditarPage),
     canActivate: [AuthGuard, PermisosGuard],
-    data: { requierePermiso: 'paginas.editar' }
+    data: { permiso: 'paginas.editar' }
   },
   {
     path: 'admin/paginas',

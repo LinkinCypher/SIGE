@@ -38,7 +38,7 @@ export class AuthService {
           this.currentUserSubject.next(response.user);
         })
       );
-  }
+  }  
 
   logout(): void {
     // Eliminar token y datos de usuario

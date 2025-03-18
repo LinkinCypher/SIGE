@@ -22,6 +22,7 @@ export class PermisosGuard implements CanActivate {
     }
     
     // Obtener el permiso requerido de los datos de la ruta
+    // Comprobar ambos posibles nombres para mantener compatibilidad
     const permisoRequerido = route.data['permiso'] as string;
     
     // Si no se especifica permiso, permitir acceso
@@ -33,10 +34,10 @@ export class PermisosGuard implements CanActivate {
     if (this.authService.hasPermission(permisoRequerido)) {
       return true;
     }
-    
+     
     // Usuario sin el permiso requerido
     this.presentToast('No tiene permisos para acceder a esta página');
-    this.router.navigate(['/home']);
+    this.router.navigate(['/dashboard']);
     return false;
   }
   

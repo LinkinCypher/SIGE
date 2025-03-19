@@ -66,6 +66,65 @@ export class FormularioPage implements OnInit {
       // Cargar los datos del usuario
       this.cargarUsuario(this.usuarioId as string);
     }
+
+    // Suscribirse a cambios en nombre y apellido para actualizar username y email
+    this.configurarAutocompletado();
+  }
+
+  // Función para configurar la actualización automática de username y email
+  configurarAutocompletado() {
+    // En lugar de usar valueChanges (que se dispara con cada letra),
+    // usamos eventos blur que se disparan cuando el campo pierde el foco
+    
+    // Obtener los elementos del DOM para los campos
+    const nombreElement = document.querySelector('ion-input[formControlName="nombre"]');
+    const apellidoElement = document.querySelector('ion-input[formControlName="apellido"]');
+    
+    if (nombreElement) {
+      nombreElement.addEventListener('ionBlur', () => {
+        // Solo actualizar si el apellido ya tiene contenido
+        if (this.usuarioForm.get('apellido')?.value) {
+          this.actualizarUsernameYEmail();
+        }
+      });
+    }
+    
+    if (apellidoElement) {
+      apellidoElement.addEventListener('ionBlur', () => {
+        // Solo actualizar si el nombre ya tiene contenido
+        if (this.usuarioForm.get('nombre')?.value) {
+          this.actualizarUsernameYEmail();
+        }
+      });
+    }
+  }
+
+  // Función para actualizar automáticamente username y email
+  actualizarUsernameYEmail() {
+    const nombre = this.usuarioForm.get('nombre')?.value || '';
+    const apellido = this.usuarioForm.get('apellido')?.value || '';
+
+    // Solo actualizar si ambos campos tienen valor
+    if (nombre && apellido) {
+      // Obtener primer nombre y primer apellido completo
+      const primerNombre = nombre.split(' ')[0].toLowerCase();
+      const primerApellido = apellido.split(' ')[0].toLowerCase();
+
+      // Solo actualizar username y email si están vacíos o si nunca han sido modificados manualmente
+      const usernameActual = this.usuarioForm.get('username')?.value;
+      if (!usernameActual) {
+        // Para username: primer nombre + primer apellido completo (todo en minúsculas)
+        const nuevoUsername = primerNombre + primerApellido;
+        this.usuarioForm.get('username')?.setValue(nuevoUsername);
+      }
+
+      const emailActual = this.usuarioForm.get('email')?.value;
+      if (!emailActual) {
+        // Para email: primer nombre + primer apellido completo + @cne.gob.ec (todo en minúsculas)
+        const nuevoEmail = `${primerNombre}${primerApellido}@cne.gob.ec`;
+        this.usuarioForm.get('email')?.setValue(nuevoEmail);
+      }
+    }
   }
 
   cargarDirecciones() {

@@ -1,4 +1,3 @@
-// app-inventario/src/main.ts
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
@@ -19,8 +18,8 @@ async function bootstrap() {
   // Configurar prefijo global para las rutas API
   app.setGlobalPrefix('api');
   
-  // Usar puerto desde variables de entorno o 3000 por defecto
-  const port = process.env.PORT || 3000;
+  // Usar puerto desde variables de entorno o 3002 por defecto
+  const port = process.env.PORT || 3002;
   await app.listen(port);
   console.log(`Aplicación iniciada en puerto: ${port}`);
 }

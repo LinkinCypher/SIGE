@@ -17,7 +17,7 @@ export interface Cargo {
   providedIn: 'root'
 })
 export class CargosService {
-  private apiUrl = `${environment.apiUrl}/cargos`;
+  private apiUrl = `${environment.URL_API_USUARIOS}/cargos`;
 
   constructor(private http: HttpClient) { }
 

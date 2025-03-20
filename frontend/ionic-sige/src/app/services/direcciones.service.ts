@@ -17,7 +17,7 @@ export interface Direccion {
   providedIn: 'root'
 })
 export class DireccionesService {
-  private apiUrl = `${environment.apiUrl}/direcciones`;
+  private apiUrl = `${environment.URL_API_USUARIOS}/direcciones`;
 
   constructor(private http: HttpClient) { }
 

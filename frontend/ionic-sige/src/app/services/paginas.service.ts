@@ -27,7 +27,7 @@ export interface PaginaArbol extends Pagina {
   providedIn: 'root'
 })
 export class PaginasService {
-  private apiUrl = `${environment.apiUrl}/paginas`;
+  private apiUrl = `${environment.URL_API_USUARIOS}/paginas`;
 
   constructor(private http: HttpClient) { }
 

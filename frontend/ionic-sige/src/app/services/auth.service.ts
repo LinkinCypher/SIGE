@@ -10,7 +10,7 @@ import { environment } from '../../environments/environment';
   providedIn: 'root'
 })
 export class AuthService {
-  private apiUrl = environment.apiUrl;
+  private apiUrl = environment.URL_API_USUARIOS;
   private currentUserSubject: BehaviorSubject<Usuario | null>;
   public currentUser: Observable<Usuario | null>;
   private tokenKey = 'sige_token';

@@ -15,8 +15,8 @@ export interface Permiso {
   providedIn: 'root'
 })
 export class PermisosService {
-  private apiUrl = `${environment.apiUrl}/permisos`;
-  private usuarioPermisosUrl = `${environment.apiUrl}/usuario-permisos`;
+  private apiUrl = `${environment.URL_API_USUARIOS}/permisos`;
+  private usuarioPermisosUrl = `${environment.URL_API_USUARIOS}/usuario-permisos`;
 
   constructor(private http: HttpClient) { }
 

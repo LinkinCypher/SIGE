@@ -132,11 +132,6 @@ const routes: Routes = [
     data: { permiso: 'paginas.editar' }
   },
   {
-    path: 'admin/paginas',
-    redirectTo: 'admin/paginas/lista',
-    pathMatch: 'full'
-  },
-  {
     path: 'inventario',
     loadComponent: () => import('./pages/inventario/home/home.page').then(m => m.HomePage),
     canActivate: [AuthGuard, PermisosGuard],

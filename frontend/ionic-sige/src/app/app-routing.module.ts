@@ -135,7 +135,43 @@ const routes: Routes = [
     path: 'admin/paginas',
     redirectTo: 'admin/paginas/lista',
     pathMatch: 'full'
-  }
+  },
+  {
+    path: 'inventario',
+    loadComponent: () => import('./pages/inventario/home/home.page').then(m => m.HomePage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'inventario.equipos.ver' }
+  },
+  {
+    path: 'inventario/tipos',
+    loadComponent: () => import('./pages/inventario/tipos/tipos.page').then(m => m.TiposPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'inventario.tipos.ver' }
+  },
+  {
+    path: 'inventario/marcas',
+    loadComponent: () => import('./pages/inventario/marcas/marcas.page').then(m => m.MarcasPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'inventario.marcas.ver' }
+  },
+  {
+    path: 'inventario/equipos',
+    loadComponent: () => import('./pages/inventario/equipos/equipos.page').then(m => m.EquiposPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'inventario.equipos.ver' }
+  },
+  {
+    path: 'inventario/mantenimientos',
+    loadComponent: () => import('./pages/inventario/mantenimientos/mantenimientos.page').then(m => m.MantenimientosPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'inventario.mantenimientos.ver' }
+  },
+  {
+    path: 'inventario/seguros',
+    loadComponent: () => import('./pages/inventario/seguros/seguros.page').then(m => m.SegurosPage),
+    canActivate: [AuthGuard, PermisosGuard],
+    data: { permiso: 'inventario.seguros.ver' }
+  },
 ];
 
 @NgModule({

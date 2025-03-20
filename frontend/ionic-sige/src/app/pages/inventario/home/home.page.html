@@ -1,0 +1,74 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-menu-button></ion-menu-button>
+    </ion-buttons>
+    <ion-title>Gestión de Inventario</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card routerLink="/inventario/equipos">
+          <ion-card-header>
+            <ion-card-title>Equipos</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-icon name="devices" size="large"></ion-icon>
+            <p>Gestión de equipos tecnológicos</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card routerLink="/inventario/tipos">
+          <ion-card-header>
+            <ion-card-title>Tipos de Equipo</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-icon name="list" size="large"></ion-icon>
+            <p>Administración de tipos de equipo</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card routerLink="/inventario/marcas">
+          <ion-card-header>
+            <ion-card-title>Marcas</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-icon name="pricetag" size="large"></ion-icon>
+            <p>Administración de marcas</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card routerLink="/inventario/mantenimientos">
+          <ion-card-header>
+            <ion-card-title>Mantenimientos</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-icon name="build" size="large"></ion-icon>
+            <p>Registro y consulta de mantenimientos</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+      
+      <ion-col size="12" size-md="6" size-lg="4">
+        <ion-card routerLink="/inventario/seguros">
+          <ion-card-header>
+            <ion-card-title>Seguros</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            <ion-icon name="shield" size="large"></ion-icon>
+            <p>Gestión de seguros de equipos</p>
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

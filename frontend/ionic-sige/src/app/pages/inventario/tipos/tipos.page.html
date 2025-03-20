@@ -1,13 +1,61 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>tipos</ion-title>
+<!-- src/app/pages/inventario/tipos/tipos.page.html -->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inventario"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Tipos de Equipo</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="mostrarFormulario()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">tipos</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargarTipos(); $event.target.complete()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="cargando" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Cargando tipos...</p>
+  </div>
+
+  <ion-list *ngIf="!cargando">
+    <ion-item-sliding *ngFor="let tipo of tipos">
+      <ion-item>
+        <ion-label>
+          <h2>{{ tipo.nombre }}</h2>
+          <p *ngIf="tipo.descripcion">{{ tipo.descripcion }}</p>
+          <p *ngIf="tipo.camposEspecificos && tipo.camposEspecificos.length">
+            Campos específicos: {{ tipo.camposEspecificos.length }}
+          </p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="mostrarFormulario(tipo)">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="confirmarEliminar(tipo)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="mostrarFormulario()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Mensaje cuando no hay tipos -->
+  <div *ngIf="!cargando && tipos.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="alert-circle-outline" size="large" color="medium"></ion-icon>
+    <p>No hay tipos de equipo registrados.</p>
+    <ion-button (click)="mostrarFormulario()">Crear Nuevo Tipo</ion-button>
+  </div>
 </ion-content>

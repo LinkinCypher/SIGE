@@ -15,8 +15,8 @@ export interface Seguro {
   equipo: string | Equipo;
   aseguradora?: string;
   numeroPoliza?: string;
-  fechaInicio?: Date;
-  fechaFin?: Date;
+  fechaInicio?: Date | string;
+  fechaFin?: Date | string;
   valorAsegurado?: number;
   historial: HistorialItem[];
   creado?: {
@@ -27,4 +27,9 @@ export interface Seguro {
     usuario: string;
     fecha: Date;
   };
+  // Propiedades adicionales para formularios
+  usuarioCreacion?: string;
+  usuarioModificacion?: string;
+  nuevoHistorialItem?: any; // Para actualizaciones de estado
+  historialItem?: any; // Para la creación inicial
 }

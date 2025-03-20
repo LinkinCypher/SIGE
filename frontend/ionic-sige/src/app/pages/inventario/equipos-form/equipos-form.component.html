@@ -1,0 +1,71 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancelar()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ modoEdicion ? 'Editar Equipo' : 'Nuevo Equipo' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="guardar()" [disabled]="!equipoForm.valid">
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="equipoForm">
+    <ion-item>
+      <ion-label position="stacked">Tipo de Equipo</ion-label>
+      <ion-select formControlName="tipo" placeholder="Seleccione un tipo" interface="action-sheet">
+        <ion-select-option *ngFor="let tipo of tipos" [value]="tipo._id">{{ tipo.nombre }}</ion-select-option>
+      </ion-select>
+      <ion-note slot="error" *ngIf="equipoForm.get('tipo')?.touched && equipoForm.get('tipo')?.errors?.['required']">
+        El tipo de equipo es obligatorio
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Marca</ion-label>
+      <ion-select formControlName="marca" placeholder="Seleccione una marca" interface="action-sheet">
+        <ion-select-option *ngFor="let marca of marcas" [value]="marca._id">{{ marca.nombre }}</ion-select-option>
+      </ion-select>
+      <ion-note slot="error" *ngIf="equipoForm.get('marca')?.touched && equipoForm.get('marca')?.errors?.['required']">
+        La marca es obligatoria
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Modelo</ion-label>
+      <ion-input formControlName="modelo" placeholder="Ingrese el modelo"></ion-input>
+      <ion-note slot="error" *ngIf="equipoForm.get('modelo')?.touched && equipoForm.get('modelo')?.errors?.['required']">
+        El modelo es obligatorio
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Número de Serie</ion-label>
+      <ion-input formControlName="serie" placeholder="Ingrese el número de serie"></ion-input>
+      <ion-note slot="error" *ngIf="equipoForm.get('serie')?.touched && equipoForm.get('serie')?.errors?.['required']">
+        El número de serie es obligatorio
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Código</ion-label>
+      <ion-input formControlName="codigo" placeholder="Ingrese el código"></ion-input>
+      <ion-note slot="error" *ngIf="equipoForm.get('codigo')?.touched && equipoForm.get('codigo')?.errors?.['required']">
+        El código es obligatorio
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Fecha de Adquisición</ion-label>
+      <ion-input type="date" formControlName="fechaAdquisicion"></ion-input>
+      <ion-note slot="error" *ngIf="equipoForm.get('fechaAdquisicion')?.touched && equipoForm.get('fechaAdquisicion')?.errors?.['required']">
+        La fecha de adquisición es obligatoria
+      </ion-note>
+    </ion-item>
+  </form>
+</ion-content>

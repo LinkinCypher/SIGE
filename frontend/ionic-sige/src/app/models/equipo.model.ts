@@ -8,7 +8,7 @@ export interface Equipo {
   modelo: string;
   serie: string;
   codigo: string;
-  fechaAdquisicion: Date;
+  fechaAdquisicion: Date | string;
   activo: boolean;
   creado?: {
     usuario: string;
@@ -18,4 +18,7 @@ export interface Equipo {
     usuario: string;
     fecha: Date;
   };
+  // Propiedades para formularios
+  usuarioCreacion?: string;
+  usuarioModificacion?: string;
 }

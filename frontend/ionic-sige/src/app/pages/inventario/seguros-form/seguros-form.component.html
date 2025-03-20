@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancelar()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>
+      {{ esActualizacionEstado ? 'Actualizar Estado' : (modoEdicion ? 'Editar Seguro' : 'Nuevo Seguro') }}
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="guardar()" [disabled]="(esActualizacionEstado ? !historialForm.valid : (!seguroForm.valid || !historialForm.valid))">
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="seguroForm" *ngIf="!esActualizacionEstado || modoEdicion">
+    <ion-item>
+      <ion-label position="stacked">Equipo</ion-label>
+      <ion-select formControlName="equipo" placeholder="Seleccione un equipo" (ionChange)="onEquipoChange($event)" [disabled]="modoEdicion || !!equipoId">
+        <ion-select-option *ngFor="let equipo of equipos" [value]="equipo._id">
+          {{ equipo.modelo }} - {{ equipo.codigo }}
+        </ion-select-option>
+      </ion-select>
+      <ion-note slot="error" *ngIf="seguroForm.get('equipo')?.touched && seguroForm.get('equipo')?.errors?.['required']">
+        El equipo es obligatorio
+      </ion-note>
+    </ion-item>
+
+    <!-- Detalles del equipo seleccionado -->
+    <ion-card *ngIf="equipoSeleccionado">
+      <ion-card-header>
+        <ion-card-subtitle>Detalles del equipo</ion-card-subtitle>
+        <ion-card-title>{{ equipoSeleccionado.modelo }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Código:</strong> {{ equipoSeleccionado.codigo }}</p>
+        <p><strong>Serie:</strong> {{ equipoSeleccionado.serie }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-item>
+      <ion-label position="stacked">Aseguradora</ion-label>
+      <ion-input formControlName="aseguradora" placeholder="Ingrese el nombre de la aseguradora"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Número de Póliza</ion-label>
+      <ion-input formControlName="numeroPoliza" placeholder="Ingrese el número de póliza"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Fecha de Inicio</ion-label>
+      <ion-input type="date" formControlName="fechaInicio"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Fecha de Fin</ion-label>
+      <ion-input type="date" formControlName="fechaFin"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Valor Asegurado</ion-label>
+      <ion-input type="number" formControlName="valorAsegurado" placeholder="Ingrese el valor asegurado"></ion-input>
+    </ion-item>
+  </form>
+
+  <ion-item-divider>
+    <ion-label>Estado del Seguro</ion-label>
+  </ion-item-divider>
+
+  <form [formGroup]="historialForm">
+    <ion-item>
+      <ion-label position="stacked">Estado</ion-label>
+      <ion-select formControlName="estado" placeholder="Seleccione un estado">
+        <ion-select-option *ngFor="let estado of estadosSeguro" [value]="estado">{{ estado }}</ion-select-option>
+      </ion-select>
+      <ion-note slot="error" *ngIf="historialForm.get('estado')?.touched && historialForm.get('estado')?.errors?.['required']">
+        El estado es obligatorio
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Descripción</ion-label>
+      <ion-textarea formControlName="descripcion" rows="4" placeholder="Ingrese una descripción o comentario"></ion-textarea>
+    </ion-item>
+  </form>
+</ion-content>

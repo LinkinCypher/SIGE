@@ -1,0 +1,88 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button (click)="cancelar()">
+        <ion-icon slot="icon-only" name="close"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>{{ modoEdicion ? 'Editar Mantenimiento' : 'Nuevo Mantenimiento' }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="guardar()" [disabled]="!mantenimientoForm.valid">
+        <ion-icon slot="icon-only" name="checkmark"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="mantenimientoForm">
+    <ion-item>
+      <ion-label position="stacked">Equipo</ion-label>
+      <ion-select formControlName="equipo" placeholder="Seleccione un equipo" (ionChange)="onEquipoChange($event)" [disabled]="modoEdicion || !!equipoId">
+        <ion-select-option *ngFor="let equipo of equipos" [value]="equipo._id">
+          {{ equipo.modelo }} - {{ equipo.codigo }}
+        </ion-select-option>
+      </ion-select>
+      <ion-note slot="error" *ngIf="mantenimientoForm.get('equipo')?.touched && mantenimientoForm.get('equipo')?.errors?.['required']">
+        El equipo es obligatorio
+      </ion-note>
+    </ion-item>
+
+    <!-- Detalles del equipo seleccionado -->
+    <ion-card *ngIf="equipoSeleccionado">
+      <ion-card-header>
+        <ion-card-subtitle>Detalles del equipo</ion-card-subtitle>
+        <ion-card-title>{{ equipoSeleccionado.modelo }}</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <p><strong>Código:</strong> {{ equipoSeleccionado.codigo }}</p>
+        <p><strong>Serie:</strong> {{ equipoSeleccionado.serie }}</p>
+      </ion-card-content>
+    </ion-card>
+
+    <ion-item>
+      <ion-label position="stacked">Código de Mantenimiento</ion-label>
+      <ion-input formControlName="codigo" placeholder="Ingrese el código"></ion-input>
+      <ion-note slot="error" *ngIf="mantenimientoForm.get('codigo')?.touched && mantenimientoForm.get('codigo')?.errors?.['required']">
+        El código es obligatorio
+      </ion-note>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Fecha</ion-label>
+      <ion-input type="date" formControlName="fecha"></ion-input>
+      <ion-note slot="error" *ngIf="mantenimientoForm.get('fecha')?.touched && mantenimientoForm.get('fecha')?.errors?.['required']">
+        La fecha es obligatoria
+      </ion-note>
+    </ion-item>
+
+    <ion-item-divider>
+      <ion-label>Datos Técnicos</ion-label>
+    </ion-item-divider>
+
+    <ion-item>
+      <ion-label position="stacked">Memoria RAM</ion-label>
+      <ion-input formControlName="memoriaRam" placeholder="Ej: 8GB DDR4"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Disco Duro</ion-label>
+      <ion-input formControlName="discoDuro" placeholder="Ej: 256GB SSD"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Procesador</ion-label>
+      <ion-input formControlName="procesador" placeholder="Ej: Intel Core i5 10th Gen"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Sistema Operativo</ion-label>
+      <ion-input formControlName="sistemaOperativo" placeholder="Ej: Windows 10 Pro"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-label position="stacked">Observaciones</ion-label>
+      <ion-textarea formControlName="observaciones" rows="4" placeholder="Ingrese observaciones adicionales"></ion-textarea>
+    </ion-item>
+  </form>
+</ion-content>

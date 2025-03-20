@@ -1,13 +1,84 @@
-<ion-header [translucent]="true">
+<!-- src/app/pages/inventario/mantenimientos/mantenimientos.page.html -->
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inventario"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Mantenimientos</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="mostrarFormulario()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
   <ion-toolbar>
-    <ion-title>mantenimientos</ion-title>
+    <ion-searchbar placeholder="Buscar mantenimientos" showCancelButton="focus"></ion-searchbar>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment (ionChange)="filtrarPorEquipo($event)" value="">
+      <ion-segment-button value="">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button *ngFor="let equipo of equipos | keyvalue" [value]="equipo.key">
+        <ion-label>{{ equipo.value.codigo }}</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">mantenimientos</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargarMantenimientos(); $event.target.complete()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="cargando" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Cargando mantenimientos...</p>
+  </div>
+
+  <ion-list *ngIf="!cargando">
+    <ion-item-sliding *ngFor="let mantenimiento of mantenimientos">
+      <ion-item detail="true" [routerLink]="['/inventario/mantenimientos', mantenimiento._id]">
+        <ion-label>
+          <h2>{{ mantenimiento.codigo }}</h2>
+          <p>
+            <ion-text color="primary">{{ getInfoEquipo(mantenimiento.equipo) }}</ion-text>
+          </p>
+          <p>
+            <ion-icon name="calendar-outline"></ion-icon>
+            {{ mantenimiento.fecha | date:'dd/MM/yyyy' }}
+            <ion-icon name="person-outline" class="ion-margin-start"></ion-icon>
+            {{ mantenimiento.tecnico?.nombre || 'Técnico no especificado' }}
+          </p>
+          <p *ngIf="mantenimiento.memoriaRam || mantenimiento.discoDuro || mantenimiento.procesador">
+            <ion-text *ngIf="mantenimiento.memoriaRam">RAM: {{ mantenimiento.memoriaRam }}</ion-text>
+            <ion-text *ngIf="mantenimiento.discoDuro" class="ion-margin-start">Disco: {{ mantenimiento.discoDuro }}</ion-text>
+            <ion-text *ngIf="mantenimiento.procesador" class="ion-margin-start">CPU: {{ mantenimiento.procesador }}</ion-text>
+          </p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="primary" (click)="mostrarFormulario(mantenimiento)">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="confirmarEliminar(mantenimiento)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="mostrarFormulario()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Mensaje cuando no hay mantenimientos -->
+  <div *ngIf="!cargando && mantenimientos.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="alert-circle-outline" size="large" color="medium"></ion-icon>
+    <p>No hay mantenimientos registrados{{ filtroEquipo ? ' para este equipo' : '' }}.</p>
+    <ion-button (click)="mostrarFormulario()">Registrar Nuevo Mantenimiento</ion-button>
+  </div>
 </ion-content>

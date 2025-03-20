@@ -1,13 +1,94 @@
-<ion-header [translucent]="true">
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/inventario"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Seguros</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="mostrarFormulario()">
+        <ion-icon slot="icon-only" name="add"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
   <ion-toolbar>
-    <ion-title>seguros</ion-title>
+    <ion-segment (ionChange)="filtrarPorEstado($event)" value="">
+      <ion-segment-button value="">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Aprobado">
+        <ion-label>Aprobados</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="En trámite">
+        <ion-label>En trámite</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="Vencido">
+        <ion-label>Vencidos</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">seguros</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <ion-refresher slot="fixed" (ionRefresh)="cargarSeguros(); $event.target.complete()">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <div *ngIf="cargando" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Cargando seguros...</p>
+  </div>
+
+  <ion-list *ngIf="!cargando">
+    <ion-item-sliding *ngFor="let seguro of seguros">
+      <ion-item detail="true" [routerLink]="['/inventario/seguros', seguro._id]">
+        <ion-label>
+          <h2>{{ getInfoEquipo(seguro.equipo) }}</h2>
+          <p>
+            <ion-badge [color]="getColorEstado(getUltimoEstado(seguro))">
+              {{ getUltimoEstado(seguro) }}
+            </ion-badge>
+            <span *ngIf="seguro.aseguradora" class="ion-margin-start">
+              Aseguradora: {{ seguro.aseguradora }}
+            </span>
+          </p>
+          <p *ngIf="seguro.numeroPoliza">
+            <ion-text>Póliza: {{ seguro.numeroPoliza }}</ion-text>
+          </p>
+          <p *ngIf="seguro.fechaInicio || seguro.fechaFin">
+            <ion-text *ngIf="seguro.fechaInicio">
+              Inicio: {{ seguro.fechaInicio | date:'dd/MM/yyyy' }}
+            </ion-text>
+            <ion-text *ngIf="seguro.fechaFin" class="ion-margin-start">
+              Fin: {{ seguro.fechaFin | date:'dd/MM/yyyy' }}
+            </ion-text>
+          </p>
+        </ion-label>
+      </ion-item>
+
+      <ion-item-options side="end">
+        <ion-item-option color="tertiary" (click)="actualizarEstado(seguro)">
+          <ion-icon slot="icon-only" name="sync"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="primary" (click)="mostrarFormulario(seguro)">
+          <ion-icon slot="icon-only" name="create"></ion-icon>
+        </ion-item-option>
+        <ion-item-option color="danger" (click)="confirmarEliminar(seguro)">
+          <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+      </ion-item-options>
+    </ion-item-sliding>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="mostrarFormulario()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
+
+  <!-- Mensaje cuando no hay seguros -->
+  <div *ngIf="!cargando && seguros.length === 0" class="ion-text-center ion-padding">
+    <ion-icon name="alert-circle-outline" size="large" color="medium"></ion-icon>
+    <p>No hay seguros registrados{{ filtroEstado ? ' con este estado' : '' }}.</p>
+    <ion-button (click)="mostrarFormulario()">Registrar Nuevo Seguro</ion-button>
+  </div>
 </ion-content>

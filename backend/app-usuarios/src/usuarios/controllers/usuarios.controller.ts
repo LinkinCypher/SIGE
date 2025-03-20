@@ -29,7 +29,6 @@ export class UsuariosController {
   @RequierePermiso('usuarios.crear')
   @HttpCode(HttpStatus.CREATED)
   create(@Body() createUsuarioDto: CreateUsuarioDto, @Request() req) {
-    // Opcionalmente, podemos usar el usuario autenticado para el campo asignadoPor
     return this.usuariosService.create(createUsuarioDto);
   }
 
@@ -82,5 +81,32 @@ export class UsuariosController {
   @RequierePermiso('usuarios.editar')
   desactivar(@Param('id') id: string) {
     return this.usuariosService.toggleActive(id, false);
+  }
+
+  // 🔹 NUEVOS ENDPOINTS PARA GESTIONAR PERMISOS 🔹
+
+  @Get(':id/permisos')
+  @UseGuards(PermisosGuard)
+  @RequierePermiso('usuarios.ver')
+  findPermisos(@Param('id') id: string) {
+    return this.usuariosService.findOne(id).then(usuario => usuario.permisos);
+  }
+
+  @Patch(':id/permisos/asignar')
+  @UseGuards(PermisosGuard)
+  @RequierePermiso('permisos.asignar')
+  async asignarPermisos(@Param('id') id: string, @Body() body: { permisos: string[] }) {
+    const usuario = await this.usuariosService.findOne(id);
+    const nuevosPermisos = [...new Set([...usuario.permisos, ...body.permisos])]; // Evita duplicados
+    return this.usuariosService.update(id, { permisos: nuevosPermisos });
+  }
+
+  @Patch(':id/permisos/revocar')
+  @UseGuards(PermisosGuard)
+  @RequierePermiso('permisos.asignar')
+  async revocarPermisos(@Param('id') id: string, @Body() body: { permisos: string[] }) {
+    const usuario = await this.usuariosService.findOne(id);
+    const permisosActualizados = usuario.permisos.filter(p => !body.permisos.includes(p));
+    return this.usuariosService.update(id, { permisos: permisosActualizados });
   }
 }

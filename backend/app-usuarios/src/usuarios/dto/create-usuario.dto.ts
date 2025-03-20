@@ -6,7 +6,8 @@ import {
   IsOptional, 
   IsPhoneNumber, 
   IsString, 
-  MinLength 
+  MinLength,
+  IsArray
 } from 'class-validator';
 import { Types } from 'mongoose';
 
@@ -51,4 +52,9 @@ export class CreateUsuarioDto {
   @IsOptional()
   @IsString({ message: 'El teléfono debe ser una cadena de texto' })
   telefono?: string;
+
+  @IsOptional()
+  @IsArray({ message: 'Los permisos deben ser un array de cadenas' })
+  @IsString({ each: true, message: 'Cada permiso debe ser una cadena de texto' })
+  permisos?: string[];
 }

@@ -25,16 +25,16 @@ export class UsuariosService {
     if (usuarioExistente) {
       throw new ConflictException('El nombre de usuario ya existe');
     }
-
+  
     // Verificar que la dirección existe
     await this.verificarDireccion(createUsuarioDto.direccionId);
-
+  
     // Verificar que el cargo existe y pertenece a la dirección
     await this.verificarCargo(createUsuarioDto.cargoId, createUsuarioDto.direccionId);
-
+  
     // Preparar los datos para crear el nuevo usuario
     const userData: any = { ...createUsuarioDto };
-    
+  
     // Convertir IDs a ObjectId si son strings
     if (typeof createUsuarioDto.direccionId === 'string') {
       userData.direccionId = new Types.ObjectId(createUsuarioDto.direccionId);
@@ -42,18 +42,22 @@ export class UsuariosService {
     if (typeof createUsuarioDto.cargoId === 'string') {
       userData.cargoId = new Types.ObjectId(createUsuarioDto.cargoId);
     }
-
+  
     // Hashear la contraseña
     const salt = await bcrypt.genSalt();
     userData.password = await bcrypt.hash(createUsuarioDto.password, salt);
     
     // Convertir fechaNacimiento a Date
     userData.fechaNacimiento = new Date(createUsuarioDto.fechaNacimiento);
-
+  
+    // Asignar permisos si existen en el DTO, sino dejar vacío
+    userData.permisos = createUsuarioDto.permisos || [];
+  
     // Crear nuevo usuario con los datos preparados
     const nuevoUsuario = new this.usuarioModel(userData);
     return nuevoUsuario.save();
   }
+  
 
   async findAll(activo?: boolean, direccionId?: string, cargoId?: string): Promise<Usuario[]> {
     const filter: any = {};
@@ -104,10 +108,10 @@ export class UsuariosService {
       const usuario = await this.findOne(id);
       await this.verificarCargo(updateUsuarioDto.cargoId, usuario.direccionId.toString());
     }
-
+  
     // Crear objeto de actualización en lugar de modificar el DTO directamente
     const updateData: any = { ...updateUsuarioDto };
-    
+  
     // Convertir IDs a ObjectId si son strings
     if (updateUsuarioDto.direccionId && typeof updateUsuarioDto.direccionId === 'string') {
       updateData.direccionId = new Types.ObjectId(updateUsuarioDto.direccionId);
@@ -115,31 +119,36 @@ export class UsuariosService {
     if (updateUsuarioDto.cargoId && typeof updateUsuarioDto.cargoId === 'string') {
       updateData.cargoId = new Types.ObjectId(updateUsuarioDto.cargoId);
     }
-
+  
     // Si viene password en el DTO, hasheamos la nueva contraseña
     if (updateUsuarioDto.password) {
       const salt = await bcrypt.genSalt();
       updateData.password = await bcrypt.hash(updateUsuarioDto.password, salt);
     }
-
+  
     // Si viene fechaNacimiento, convertir a Date
     if (updateUsuarioDto.fechaNacimiento) {
       updateData.fechaNacimiento = new Date(updateUsuarioDto.fechaNacimiento);
     }
-
+  
+    // Si vienen permisos, los actualizamos
+    if (updateUsuarioDto.permisos !== undefined) {
+      updateData.permisos = updateUsuarioDto.permisos;
+    }
+  
     // Añadir fecha de actualización
     updateData.fechaActualizacion = new Date();
-
+  
     const usuarioActualizado = await this.usuarioModel
       .findByIdAndUpdate(id, updateData, { new: true })
       .exec();
-
+  
     if (!usuarioActualizado) {
       throw new NotFoundException(`Usuario con ID "${id}" no encontrado`);
     }
-
+  
     return usuarioActualizado;
-  }
+  }  
 
   async remove(id: string): Promise<void> {
     const resultado = await this.usuarioModel.deleteOne({ _id: id }).exec();

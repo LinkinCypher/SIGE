@@ -28,16 +28,14 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  login(loginData: LoginRequest): Observable<LoginResponse> {
-    return this.http.post<LoginResponse>(`${this.apiUrl}/auth/login`, loginData)
-      .pipe(
-        tap(response => {
-          // Almacenar token y datos de usuario
-          localStorage.setItem(this.tokenKey, response.access_token);
-          localStorage.setItem(this.userKey, JSON.stringify(response.user));
-          this.currentUserSubject.next(response.user);
-        })
-      );
+  login(credentials: any): Observable<any> {
+    return this.http.post(`${this.apiUrl}/auth/login`, credentials).pipe(
+      tap((res: any) => {
+        console.log('🔍 Respuesta del backend en login:', res);
+        localStorage.setItem(this.userKey, JSON.stringify(res.user));
+        localStorage.setItem(this.tokenKey, res.access_token);
+      })
+    );
   }  
 
   logout(): void {
@@ -62,4 +60,16 @@ export class AuthService {
     }
     return user.permisos.includes(permiso);
   }
+
+  getUser(): any {
+    const usuario = localStorage.getItem(this.userKey);
+    console.log('🔍 Usuario autenticado:', usuario);
+    return usuario ? JSON.parse(usuario) : null;
+  }   
+  
+  getUserPermisos(): string[] {
+    const usuario = this.getUser();
+    return usuario && usuario.permisos ? usuario.permisos : [];
+  }  
+  
 }

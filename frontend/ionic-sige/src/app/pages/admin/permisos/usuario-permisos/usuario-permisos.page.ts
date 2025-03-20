@@ -51,14 +51,33 @@ export class UsuarioPermisosPage implements OnInit {
 
   cargarDatos() {
     this.isLoading = true;
-    
-    // Cargar datos del usuario
+  
+    // Obtener usuario
     this.usuariosService.getUsuario(this.usuarioId).subscribe({
       next: (usuario) => {
         this.usuario = usuario;
-        
-        // Cargar permisos asignados
-        this.cargarPermisosAsignados();
+  
+        // Obtener permisos asignados desde el backend
+        this.usuariosService.getPermisos(this.usuarioId).subscribe({
+          next: (permisos) => {
+            this.permisosAsignados = permisos.map(permiso => ({
+              _id: '',
+              nombre: '',
+              codigo: permiso,  // Aquí se usa el código del permiso
+              descripcion: '',
+              activo: true
+            }));
+            
+            this.permisosAsignadosFiltrados = [...this.permisosAsignados];
+  
+            // Obtener todos los permisos disponibles
+            this.cargarPermisosDisponibles();
+          },
+          error: (error) => {
+            this.isLoading = false;
+            this.mostrarToast('Error al cargar permisos asignados: ' + (error.error?.message || 'Error de servidor'), 'danger');
+          }
+        });
       },
       error: (error) => {
         this.isLoading = false;
@@ -67,6 +86,7 @@ export class UsuarioPermisosPage implements OnInit {
       }
     });
   }
+  
 
   cargarPermisosAsignados() {
     this.permisosService.getPermisosDeUsuario(this.usuarioId).subscribe({
@@ -131,17 +151,17 @@ export class UsuarioPermisosPage implements OnInit {
 
   async asignarPermiso(permiso: Permiso) {
     this.isLoading = true;
-    
-    this.permisosService.asignarPermiso(this.usuarioId, permiso._id).subscribe({
-      next: () => {
-        // Mover el permiso de disponibles a asignados
+  
+    this.usuariosService.asignarPermisos(this.usuarioId, [permiso.codigo]).subscribe({
+      next: (usuario) => {
+        // Refrescar la lista de permisos
         this.permisosAsignados.push(permiso);
-        this.permisosDisponibles = this.permisosDisponibles.filter(p => p._id !== permiso._id);
-        
+        this.permisosDisponibles = this.permisosDisponibles.filter(p => p.nombre !== permiso.nombre);
+  
         // Actualizar listas filtradas
         this.filtrarPermisosAsignados();
         this.filtrarPermisosDisponibles();
-        
+  
         this.isLoading = false;
         this.mostrarToast(`Permiso "${permiso.nombre}" asignado correctamente`, 'success');
       },
@@ -150,7 +170,7 @@ export class UsuarioPermisosPage implements OnInit {
         this.mostrarToast('Error al asignar permiso: ' + (error.error?.message || 'Error de servidor'), 'danger');
       }
     });
-  }
+  }  
 
   async revocarPermiso(permiso: Permiso) {
     const alert = await this.alertController.create({
@@ -175,17 +195,17 @@ export class UsuarioPermisosPage implements OnInit {
 
   ejecutarRevocarPermiso(permiso: Permiso) {
     this.isLoading = true;
-    
-    this.permisosService.revocarPermiso(this.usuarioId, permiso._id).subscribe({
-      next: () => {
-        // Mover el permiso de asignados a disponibles
+  
+    this.usuariosService.revocarPermisos(this.usuarioId, [permiso.codigo]).subscribe({
+      next: (usuario) => {
+        // Refrescar la lista de permisos
         this.permisosDisponibles.push(permiso);
-        this.permisosAsignados = this.permisosAsignados.filter(p => p._id !== permiso._id);
-        
+        this.permisosAsignados = this.permisosAsignados.filter(p => p.nombre !== permiso.nombre);
+  
         // Actualizar listas filtradas
         this.filtrarPermisosAsignados();
         this.filtrarPermisosDisponibles();
-        
+  
         this.isLoading = false;
         this.mostrarToast(`Permiso "${permiso.nombre}" revocado correctamente`, 'success');
       },
@@ -194,7 +214,7 @@ export class UsuarioPermisosPage implements OnInit {
         this.mostrarToast('Error al revocar permiso: ' + (error.error?.message || 'Error de servidor'), 'danger');
       }
     });
-  }
+  }  
 
   private async mostrarToast(mensaje: string, color: string = 'primary') {
     const toast = await this.toastController.create({

@@ -15,31 +15,25 @@ export class PermisosGuard implements CanActivate {
   ) {}
   
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
-    // Primero verificar si el usuario está autenticado
     if (!this.authService.isLoggedIn()) {
       this.router.navigate(['/login']);
       return false;
     }
-    
-    // Obtener el permiso requerido de los datos de la ruta
-    // Comprobar ambos posibles nombres para mantener compatibilidad
+  
     const permisoRequerido = route.data['permiso'] as string;
-    
-    // Si no se especifica permiso, permitir acceso
-    if (!permisoRequerido) {
+    const permisosUsuario = this.authService.getUserPermisos();
+  
+    console.log('🔍 Permiso requerido:', permisoRequerido);
+    console.log('🔍 Permisos del usuario autenticado:', permisosUsuario);
+  
+    if (permisosUsuario.includes(permisoRequerido)) {
       return true;
     }
-    
-    // Verificar si el usuario tiene el permiso requerido
-    if (this.authService.hasPermission(permisoRequerido)) {
-      return true;
-    }
-     
-    // Usuario sin el permiso requerido
+  
     this.presentToast('No tiene permisos para acceder a esta página');
     this.router.navigate(['/dashboard']);
     return false;
-  }
+  }    
   
   private async presentToast(message: string) {
     const toast = await this.toastController.create({

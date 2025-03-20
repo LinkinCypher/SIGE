@@ -67,8 +67,7 @@ export class AuthService {
     }
 
     // Obtener los códigos de permisos del usuario
-    const permisos = await this.usuarioPermisosService.getPermisosDeUsuario(user._id);
-    const codigosPermisos = permisos.map(p => p.codigo);
+    const codigosPermisos = user.permisos || [];
 
     // Crear el payload del token JWT
     const payload = { 

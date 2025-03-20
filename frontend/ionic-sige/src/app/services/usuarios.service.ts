@@ -57,4 +57,17 @@ export class UsuariosService {
   desactivarUsuario(id: string): Observable<Usuario> {
     return this.http.patch<Usuario>(`${this.apiUrl}/${id}/desactivar`, {});
   }
+
+  getPermisos(id: string): Observable<string[]> {
+    return this.http.get<string[]>(`${this.apiUrl}/${id}/permisos`);
+  }
+
+  asignarPermisos(id: string, permisos: string[]): Observable<Usuario> {
+    return this.http.patch<Usuario>(`${this.apiUrl}/${id}/permisos/asignar`, { permisos });
+  }
+
+  revocarPermisos(id: string, permisos: string[]): Observable<Usuario> {
+    return this.http.patch<Usuario>(`${this.apiUrl}/${id}/permisos/revocar`, { permisos });
+  }
+
 }

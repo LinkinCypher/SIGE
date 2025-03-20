@@ -54,6 +54,9 @@ export class Usuario {
 
   @Prop({ default: null })
   ultimoAcceso: Date;
+
+  @Prop({ type: [String], default: [] })
+  permisos: string[];
 }
 
 export const UsuarioSchema = SchemaFactory.createForClass(Usuario);

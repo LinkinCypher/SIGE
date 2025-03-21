@@ -167,18 +167,30 @@ export class TiposPage implements OnInit {
       message: 'Creando tipo...'
     });
     await loading.present();
-
+  
     // Obtener el usuario actual
-    const usuarioActual = localStorage.getItem('usuario') || 'admin'; // Ejemplo simple
-
+    const usuarioActual = localStorage.getItem('usuario') || 'admin';
+  
+    // Objeto que cumple con la interfaz Tipo
     const nuevoTipo: Tipo = {
       nombre: data.nombre,
       descripcion: data.descripcion,
+      camposEspecificos: [],
       activo: true,
       usuarioCreacion: usuarioActual
     };
-
-    this.tiposService.crearTipo(nuevoTipo).subscribe({
+    
+    // Objeto que se enviará al servidor (omitiendo activo si no está en el DTO)
+    const datosPeticion = {
+      nombre: nuevoTipo.nombre,
+      descripcion: nuevoTipo.descripcion,
+      camposEspecificos: nuevoTipo.camposEspecificos,
+      usuarioCreacion: nuevoTipo.usuarioCreacion
+    };
+    
+    console.log('Datos a enviar:', datosPeticion);
+  
+    this.tiposService.crearTipo(datosPeticion).subscribe({
       next: async () => {
         loading.dismiss();
         const toast = await this.toastController.create({
@@ -191,9 +203,11 @@ export class TiposPage implements OnInit {
       },
       error: async (error) => {
         console.error('Error al crear tipo:', error);
+        console.log('Detalles del error:', error.error);
+        
         loading.dismiss();
         const toast = await this.toastController.create({
-          message: 'Error al crear el tipo',
+          message: 'Error al crear el tipo: ' + (error.error.message || 'Error desconocido'),
           duration: 3000,
           color: 'danger'
         });

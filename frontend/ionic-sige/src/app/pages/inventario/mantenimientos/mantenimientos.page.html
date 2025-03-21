@@ -48,7 +48,7 @@
             <ion-icon name="calendar-outline"></ion-icon>
             {{ mantenimiento.fecha | date:'dd/MM/yyyy' }}
             <ion-icon name="person-outline" class="ion-margin-start"></ion-icon>
-            {{ mantenimiento.tecnico?.nombre || 'Técnico no especificado' }}
+            {{ mantenimiento.tecnico.nombre || 'Técnico no especificado' }}
           </p>
           <p *ngIf="mantenimiento.memoriaRam || mantenimiento.discoDuro || mantenimiento.procesador">
             <ion-text *ngIf="mantenimiento.memoriaRam">RAM: {{ mantenimiento.memoriaRam }}</ion-text>

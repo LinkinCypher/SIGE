@@ -22,6 +22,7 @@ export class TiposService {
   }
 
   crearTipo(tipo: Tipo): Observable<Tipo> {
+    console.log('Datos enviados a la API:', tipo);
     return this.http.post<Tipo>(this.apiUrl, tipo);
   }
 

@@ -1,4 +1,3 @@
-// src/app/models/tipo.model.ts
 export interface CampoEspecifico {
   nombre: string;
   tipo: string;
@@ -11,7 +10,7 @@ export interface Tipo {
   nombre: string;
   descripcion?: string;
   camposEspecificos?: CampoEspecifico[];
-  activo: boolean;
+  activo?: boolean;
   creado?: {
     usuario: string;
     fecha: Date;
@@ -20,7 +19,6 @@ export interface Tipo {
     usuario: string;
     fecha: Date;
   };
-  // Añadimos estas propiedades para el formulario
   usuarioCreacion?: string;
   usuarioModificacion?: string;
 }

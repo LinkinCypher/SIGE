@@ -13,8 +13,9 @@ export class TiposController {
   }
 
   @Get()
-  findAll() {
-    return this.tiposService.findAll();
+  findAll(@Query('incluirInactivos') incluirInactivos?: string) {
+    const mostrarInactivos = incluirInactivos === 'true';
+    return this.tiposService.findAll(mostrarInactivos);
   }
 
   @Get(':id')
@@ -33,5 +34,10 @@ export class TiposController {
     @Query('usuario') usuario: string,
   ) {
     return this.tiposService.remove(id, usuario);
+  }
+
+  @Patch(':id/reactivar')
+  reactivar(@Param('id') id: string, @Body() data: { usuarioModificacion: string }) {
+    return this.tiposService.reactivar(id, data.usuarioModificacion);
   }
 }

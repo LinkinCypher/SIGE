@@ -15,6 +15,8 @@ import { Tipo } from '../../../models/tipo.model';
 })
 export class TiposPage implements OnInit {
   tipos: Tipo[] = [];
+  tiposFiltrados: Tipo[] = [];
+  filtroActivo: string = 'activos';
   cargando: boolean = false;
 
   constructor(
@@ -28,6 +30,16 @@ export class TiposPage implements OnInit {
     this.cargarTipos();
   }
 
+  filtrarTipos() {
+    if (this.filtroActivo === 'activos') {
+      this.tiposFiltrados = this.tipos.filter(tipo => tipo.activo);
+    } else if (this.filtroActivo === 'inactivos') {
+      this.tiposFiltrados = this.tipos.filter(tipo => !tipo.activo);
+    } else {
+      this.tiposFiltrados = [...this.tipos];
+    }
+  }
+
   async cargarTipos() {
     this.cargando = true;
     const loading = await this.loadingController.create({
@@ -38,6 +50,7 @@ export class TiposPage implements OnInit {
     this.tiposService.getTipos().subscribe({
       next: (tipos) => {
         this.tipos = tipos;
+        this.filtrarTipos(); // Aplicar el filtro actual
         this.cargando = false;
         loading.dismiss();
       },
@@ -82,6 +95,33 @@ export class TiposPage implements OnInit {
     await alert.present();
   }
 
+  async confirmarReactivar(tipo: Tipo) {
+    if (!tipo._id) {
+      console.error('ID de tipo no válido');
+      return;
+    }
+
+    const alert = await this.alertController.create({
+      header: 'Confirmar reactivación',
+      message: `¿Está seguro que desea reactivar el tipo "${tipo.nombre}"?`,
+      buttons: [
+        {
+          text: 'Cancelar',
+          role: 'cancel'
+        },
+        {
+          text: 'Reactivar',
+          role: 'confirm',
+          handler: () => {
+            this.reactivarTipo(tipo);
+          }
+        }
+      ]
+    });
+
+    await alert.present();
+  }
+
   async eliminarTipo(tipo: Tipo) {
     if (!tipo._id) {
       console.error('ID de tipo no válido');
@@ -112,6 +152,45 @@ export class TiposPage implements OnInit {
         loading.dismiss();
         const toast = await this.toastController.create({
           message: 'Error al eliminar el tipo',
+          duration: 3000,
+          color: 'danger'
+        });
+        toast.present();
+      }
+    });
+  }
+
+  async reactivarTipo(tipo: Tipo) {
+    if (!tipo._id) {
+      console.error('ID de tipo no válido');
+      return;
+    }
+  
+    const loading = await this.loadingController.create({
+      message: 'Reactivando tipo...'
+    });
+    await loading.present();
+  
+    // Obtener el usuario actual
+    const usuarioActual = localStorage.getItem('usuario') || 'admin';
+  
+    this.tiposService.reactivarTipo(tipo._id, usuarioActual).subscribe({
+      next: async () => {
+        loading.dismiss();
+        const toast = await this.toastController.create({
+          message: 'Tipo reactivado correctamente',
+          duration: 3000,
+          color: 'success'
+        });
+        toast.present();
+        this.cargarTipos();
+      },
+      error: async (error) => {
+        console.error('Error al reactivar tipo:', error);
+        console.log('Detalles del error:', error.error);
+        loading.dismiss();
+        const toast = await this.toastController.create({
+          message: 'Error al reactivar el tipo: ' + (error.error?.message || 'Error desconocido'),
           duration: 3000,
           color: 'danger'
         });
@@ -221,18 +300,28 @@ export class TiposPage implements OnInit {
       message: 'Actualizando tipo...'
     });
     await loading.present();
-
+  
     // Obtener el usuario actual
-    const usuarioActual = localStorage.getItem('usuario') || 'admin'; // Ejemplo simple
-
+    const usuarioActual = localStorage.getItem('usuario') || 'admin';
+  
+    // Estos datos cumplen con la interfaz Tipo
     const tipoActualizado: Tipo = {
       nombre: data.nombre,
       descripcion: data.descripcion,
-      activo: true, // Mantenemos el estado activo
+      activo: true,
       usuarioModificacion: usuarioActual
     };
-
-    this.tiposService.actualizarTipo(id, tipoActualizado).subscribe({
+  
+    // Preparar datos para enviar al backend según el DTO
+    const datosPeticion = {
+      nombre: data.nombre,
+      descripcion: data.descripcion,
+      usuarioModificacion: usuarioActual
+    };
+  
+    console.log('Datos a enviar para actualizar:', datosPeticion);
+  
+    this.tiposService.actualizarTipo(id, datosPeticion).subscribe({
       next: async () => {
         loading.dismiss();
         const toast = await this.toastController.create({
@@ -245,9 +334,11 @@ export class TiposPage implements OnInit {
       },
       error: async (error) => {
         console.error('Error al actualizar tipo:', error);
+        console.log('Detalles del error:', error.error);
+        
         loading.dismiss();
         const toast = await this.toastController.create({
-          message: 'Error al actualizar el tipo',
+          message: 'Error al actualizar el tipo: ' + (error.error.message || 'Error desconocido'),
           duration: 3000,
           color: 'danger'
         });

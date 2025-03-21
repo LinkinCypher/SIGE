@@ -29,8 +29,9 @@ export class TiposService {
     return nuevoTipo.save();
   }
 
-  async findAll(): Promise<Tipo[]> {
-    return this.tipoModel.find({ activo: true }).exec();
+  async findAll(incluirInactivos: boolean = false): Promise<Tipo[]> {
+    const filtro = incluirInactivos ? {} : { activo: true };
+    return this.tipoModel.find(filtro).exec();
   }
 
   async findOne(id: string): Promise<Tipo> {
@@ -82,5 +83,25 @@ export class TiposService {
     }
     
     return tipoEliminado;
+  }
+
+  async reactivar(id: string, usuarioModificacion: string): Promise<Tipo> {
+    const tipo = await this.tipoModel.findByIdAndUpdate(
+      id,
+      {
+        activo: true,
+        modificado: {
+          usuario: usuarioModificacion,
+          fecha: new Date()
+        }
+      },
+      { new: true }
+    ).exec();
+    
+    if (!tipo) {
+      throw new NotFoundException(`Tipo con ID "${id}" no encontrado`);
+    }
+    
+    return tipo;
   }
 }

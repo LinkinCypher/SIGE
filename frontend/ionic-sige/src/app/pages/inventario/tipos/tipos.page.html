@@ -1,4 +1,3 @@
-<!-- src/app/pages/inventario/tipos/tipos.page.html -->
 <ion-header>
   <ion-toolbar color="primary">
     <ion-buttons slot="start">
@@ -10,6 +9,21 @@
         <ion-icon slot="icon-only" name="add"></ion-icon>
       </ion-button>
     </ion-buttons>
+  </ion-toolbar>
+  
+  <!-- Segmento para filtrar activos/inactivos -->
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="filtroActivo" (ionChange)="filtrarTipos()">
+      <ion-segment-button value="activos">
+        <ion-label>Activos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="inactivos">
+        <ion-label>Inactivos</ion-label>
+      </ion-segment-button>
+      <ion-segment-button value="todos">
+        <ion-label>Todos</ion-label>
+      </ion-segment-button>
+    </ion-segment>
   </ion-toolbar>
 </ion-header>
 
@@ -23,11 +37,12 @@
     <p>Cargando tipos...</p>
   </div>
 
+  <!-- Lista de tipos filtrados -->
   <ion-list *ngIf="!cargando">
-    <ion-item-sliding *ngFor="let tipo of tipos">
-      <ion-item>
+    <ion-item-sliding *ngFor="let tipo of tiposFiltrados">
+      <ion-item [color]="tipo.activo ? '' : 'light'">
         <ion-label>
-          <h2>{{ tipo.nombre }}</h2>
+          <h2>{{ tipo.nombre }} <ion-badge *ngIf="!tipo.activo" color="medium">Inactivo</ion-badge></h2>
           <p *ngIf="tipo.descripcion">{{ tipo.descripcion }}</p>
           <p *ngIf="tipo.camposEspecificos && tipo.camposEspecificos.length">
             Campos específicos: {{ tipo.camposEspecificos.length }}
@@ -42,8 +57,11 @@
         <ion-item-option color="primary" (click)="mostrarFormulario(tipo)">
           <ion-icon slot="icon-only" name="create"></ion-icon>
         </ion-item-option>
-        <ion-item-option color="danger" (click)="confirmarEliminar(tipo)">
+        <ion-item-option *ngIf="tipo.activo" color="danger" (click)="confirmarEliminar(tipo)">
           <ion-icon slot="icon-only" name="trash"></ion-icon>
+        </ion-item-option>
+        <ion-item-option *ngIf="!tipo.activo" color="success" (click)="confirmarReactivar(tipo)">
+          <ion-icon slot="icon-only" name="refresh"></ion-icon>
         </ion-item-option>
       </ion-item-options>
     </ion-item-sliding>
@@ -56,9 +74,9 @@
   </ion-fab>
 
   <!-- Mensaje cuando no hay tipos -->
-  <div *ngIf="!cargando && tipos.length === 0" class="ion-text-center ion-padding">
+  <div *ngIf="!cargando && tiposFiltrados.length === 0" class="ion-text-center ion-padding">
     <ion-icon name="alert-circle-outline" size="large" color="medium"></ion-icon>
-    <p>No hay tipos de equipo registrados.</p>
+    <p>No hay tipos de equipo {{ filtroActivo !== 'todos' ? (filtroActivo === 'activos' ? 'activos' : 'inactivos') : '' }} registrados.</p>
     <ion-button (click)="mostrarFormulario()">Crear Nuevo Tipo</ion-button>
   </div>
 </ion-content>

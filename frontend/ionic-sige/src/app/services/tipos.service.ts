@@ -14,7 +14,7 @@ export class TiposService {
   constructor(private http: HttpClient) { }
 
   getTipos(): Observable<Tipo[]> {
-    return this.http.get<Tipo[]>(this.apiUrl);
+    return this.http.get<Tipo[]>(`${this.apiUrl}?incluirInactivos=true`);
   }
 
   getTipo(id: string): Observable<Tipo> {
@@ -26,11 +26,15 @@ export class TiposService {
     return this.http.post<Tipo>(this.apiUrl, tipo);
   }
 
-  actualizarTipo(id: string, tipo: Tipo): Observable<Tipo> {
+  actualizarTipo(id: string, tipo: any): Observable<Tipo> {
     return this.http.patch<Tipo>(`${this.apiUrl}/${id}`, tipo);
   }
 
   eliminarTipo(id: string, usuario: string): Observable<Tipo> {
     return this.http.delete<Tipo>(`${this.apiUrl}/${id}?usuario=${usuario}`);
+  }
+
+  reactivarTipo(id: string, usuario: string): Observable<Tipo> {
+    return this.http.patch<Tipo>(`${this.apiUrl}/${id}/reactivar`, { usuarioModificacion: usuario });
   }
 }
